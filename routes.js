@@ -16,12 +16,13 @@ const requestHandler = (req, res) => {
     if(url === '/message' && method === 'POST') {
 
         const body = [];
-
+        
         req.on('data', (chunk) => {
             console.log(chunk);
             body.push(chunk);
         });
 
+        
         return req.on('end', () => {
             const parsedBody = Buffer.concat(body).toString();
             const message = parsedBody.split('=')[1];
@@ -47,7 +48,10 @@ const requestHandler = (req, res) => {
 }
 
 
-module.exports = requestHandler;
+module.exports = {
+    reqHandler: requestHandler,
+    routeText: 'Some hard coded text'
+}
 
 
     
