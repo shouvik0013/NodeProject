@@ -1,0 +1,15 @@
+{
+  "name": "node_starter",
+  "version": "1.0.0",
+  "description": "Project is for learning purpose",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "author": "Shouvik Mandal",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^2.0.12"
+  }
+}
