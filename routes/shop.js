@@ -2,17 +2,20 @@
 const path = require('path');
 
 // third-party modules
-const app = require('express');
+const express = require('express');
 
 // local modules
 const rootDir = require('./../utils/path');
+const adminData = require('./admin');
+const admin = require('./admin');
 
 // here router is also kind of app or a pluggable app
-const router = app.Router();
+const router = express.Router();
 
 router.get('/', (req, res, next) => {
     // console.log('In the 2nd middleware');
     // res.send('<h1>This is the shopping page</h1>');
+    console.log('shop.js', adminData.products);
     res.sendFile(path.join(rootDir, 'views', 'shop.html'));
 });
 

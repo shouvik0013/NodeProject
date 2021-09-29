@@ -11,6 +11,10 @@ const app = require('express');
 
 const router = app.Router();
 
+// to store products data
+const products = [];
+
+
 // path: /admin/add-product => 
 router.get('/add-product', (req, res, next) => {
     // console.log('In the 2nd middleware');
@@ -20,9 +24,13 @@ router.get('/add-product', (req, res, next) => {
 
 // path: /admin/product
 router.post('/add-product', (req, res, next) => {
-    console.log(req.body);
+    // console.log(req.body);
+    products.push({title: req.body.title});
     res.redirect('/');
 });
 
 
-module.exports = router;
+module.exports = {
+    routes: router,
+    products: products
+}
