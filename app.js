@@ -10,8 +10,13 @@ const adminData = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
 const rootDir = require('./utils/path');
 
-
+// express app
 const app = express();
+
+
+// setting templating engine
+app.set('view engine', 'pug');
+app.set('views', 'views');
 
 // parses the incoming message
 app.use(bodyParser.urlencoded({extended: false}));
