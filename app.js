@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({extended: false}));
 // exposes public folder publically, so we can directly access them
 app.use(express.static(path.join(rootDir, 'public')));
 
-// adminRoutes is also a valid middleware
+// adminData.routes is also a valid middleware
 app.use('/admin',adminData.routes);
 app.use(shopRoutes);
 
