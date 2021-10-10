@@ -16,9 +16,16 @@ router.get("/", (req, res, next) => {
   // console.log('In the 2nd middleware');
   // res.send('<h1>This is the shopping page</h1>');
   let products = adminData.products;
-  console.log("shop.js", products);
+  //console.log("shop.js", products);
   // res.sendFile(path.join(rootDir, 'views', 'shop.html'));
-  res.render("shop", { prods: products, pageTitle: "Shop", path: "/" });
+  res.render("shop", {
+    prods: products,
+    pageTitle: "Shop",
+    path: "/",
+    hasProducts: products.length > 0 ? true : false,
+    activeShop: true,
+    productCSS: true,
+  });
 });
 
 module.exports = router;

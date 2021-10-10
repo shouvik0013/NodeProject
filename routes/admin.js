@@ -10,6 +10,10 @@ const express = require("express");
 const router = express.Router();
 
 // to store products data
+
+/**
+ *@type {Array.<Number>}
+ */
 const products = [];
 
 // path: /admin/add-product
@@ -20,6 +24,9 @@ router.get("/add-product", (req, res, next) => {
   res.render("add-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
+    activeAddProduct: true,
+    formsCSS: true,
+    productCSS: true,
   });
 });
 
