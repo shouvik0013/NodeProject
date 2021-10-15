@@ -4,7 +4,6 @@ const path = require("path");
 // third-party modules
 const express = require("express");
 const bodyParser = require("body-parser");
-const expressHbs = require("express-handlebars");
 
 // local modules
 const adminData = require("./routes/admin");
@@ -15,11 +14,8 @@ const rootDir = require("./utils/path");
 const app = express();
 
 // setting templating engine
-app.engine(
-  "handlebars",
-  expressHbs({ layoutsDir: "views/layouts/", defaultLayout: "main-layout" })
-);
-app.set("view engine", "handlebars");
+
+app.set("view engine", "ejs");
 app.set("views", "views");
 
 // parses the incoming message
