@@ -6,7 +6,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 // local modules
-const adminData = require("./routes/admin");
+const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const rootDir = require("./utils/path");
 
@@ -23,8 +23,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // exposes public folder publically, so we can directly access them
 app.use(express.static(path.join(rootDir, "public")));
 
-// adminData.routes is also a valid middleware
-app.use("/admin", adminData.routes);
+// adminRoutes is also a valid middleware
+app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
 app.use((req, res, next) => {
