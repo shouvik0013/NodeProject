@@ -9,6 +9,7 @@ const bodyParser = require("body-parser");
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const rootDir = require("./utils/path");
+const errorController = require("./controllers/error");
 
 // express app
 const app = express();
@@ -27,10 +28,7 @@ app.use(express.static(path.join(rootDir, "public")));
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
-app.use((req, res, next) => {
-  // res.status(404).send('<h1>Requested page not found</h1>');
-  res.status(404).render("404", { pageTitle: "Page not found" });
-});
+app.use(errorController.get404);
 
 // here app is also a valid request handler
 // const server = http.createServer(app);
