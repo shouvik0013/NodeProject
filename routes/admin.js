@@ -5,13 +5,9 @@ const productsController = require("../controllers/products");
 // third party modules
 const express = require("express");
 
+// coding starts form here
 const router = express.Router();
 
-// to store products data
-
-/**
- *@type {Array.<Number>}
- */
 
 // path: /admin/add-product
 router.get("/add-product", productsController.getAddProduct);
