@@ -15,7 +15,6 @@ const errorController = require("./controllers/error");
 const app = express();
 
 // setting templating engine
-
 app.set("view engine", "ejs");
 app.set("views", "views");
 
@@ -26,7 +25,7 @@ app.use(express.static(path.join(rootDir, "public")));
 
 // adminRoutes is also a valid middleware
 app.use("/admin", adminRoutes);
-app.use(shopRoutes);
+app.use("/", shopRoutes);
 
 app.use(errorController.get404);
 
