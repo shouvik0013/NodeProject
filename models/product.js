@@ -5,34 +5,41 @@ const path = require("path");
 // local modules
 const rootDir = require("../utils/path");
 
+// path for data file
+const p = path.join(rootDir, "data", "products.json");
+
+// helper function
+const getProductsFromFile = (cb) => {
+  // here cb is a callback function
+  fs.readFile(p, (err, fileContent) => {
+    if (err) {
+      cb([]);
+    } else {
+      cb(JSON.parse(fileContent));
+    }
+  });
+};
+
+// Class definition
 module.exports = class Product {
   constructor(title) {
     this.title = title;
   }
 
   save() {
-    const p = path.join(rootDir, "data", "products.json");
-    fs.readFile(p, (err, fileContent) => {
-      let products = new Array();
-      if (!err) {
-        products = JSON.parse(fileContent);
-      }
-
+    getProductsFromFile((products) => {
       products.push(this);
       fs.writeFile(p, JSON.stringify(products), (err) => {
-        console.log(err);
+        console.log("Writing into file");
+        if (err) {
+          console.log(err);
+        }
       });
     });
   }
 
   static fetchAll(cb) {
-    // here cb is a callback function
-    const p = path.join(rootDir, "data", "products.json");
-    fs.readFile(p, (err, fileContent) => {
-      if (err) {
-        return cb([]);
-      }
-      cb(JSON.parse(fileContent));
-    });
+    // cb is a callback function
+    getProductsFromFile(cb);
   }
 };
