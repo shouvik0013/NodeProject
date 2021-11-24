@@ -15,7 +15,12 @@ const getProductsFromFile = (cb) => {
     if (err) {
       cb([]);
     } else {
-      cb(JSON.parse(fileContent));
+      try {
+        cb(JSON.parse(fileContent));
+      } catch (error) {
+        console.log("Error in file reading. Details: " + err);
+        return cb([]);
+      }
     }
   });
 };
@@ -26,7 +31,7 @@ module.exports = class Product {
     this.title = title;
   }
 
-  save() {
+  save(res) {
     getProductsFromFile((products) => {
       products.push(this);
       fs.writeFile(p, JSON.stringify(products), (err) => {
@@ -34,6 +39,7 @@ module.exports = class Product {
         if (err) {
           console.log(err);
         }
+        res.redirect("/");
       });
     });
   }
