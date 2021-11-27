@@ -8,25 +8,31 @@ const rootDir = require("../utils/path");
 // path for data file
 const p = path.join(rootDir, "data", "products.json");
 
-// helper function
+// helper function which returns array of content objects
 const getProductsFromFile = (cb) => {
   // here cb is a callback function
   fs.readFile(p, (err, fileContent) => {
     if (err) {
       cb([]);
     } else {
-      cb(JSON.parse(fileContent));
+      try {
+        cb(JSON.parse(fileContent));
+      } catch (error) {
+        console.log("Error in file reading. Details: " + err);
+        return cb([]);
+      }
     }
   });
 };
 
-// Class definition
+// CLASS DEFINITION
 module.exports = class Product {
   constructor(title) {
     this.title = title;
   }
 
-  save() {
+  save(res) {
+    // products is the array of the files which have been read
     getProductsFromFile((products) => {
       products.push(this);
       fs.writeFile(p, JSON.stringify(products), (err) => {
@@ -34,6 +40,7 @@ module.exports = class Product {
         if (err) {
           console.log(err);
         }
+        res.redirect("/");
       });
     });
   }

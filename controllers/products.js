@@ -1,7 +1,7 @@
 const Product = require("../models/product"); // Product holds a class
 
 module.exports.getAddProduct = (req, res, next) => {
-  res.render("add-product", {
+  res.render("admin/add-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     activeAddProduct: true,
@@ -12,15 +12,15 @@ module.exports.getAddProduct = (req, res, next) => {
 
 module.exports.postAddProduct = (req, res, next) => {
   const product = new Product(req.body.title);
-  product.save();
-  res.redirect("/");
+  product.save(res);
+  // res.redirect("/");
 };
 
 module.exports.getProducts = (req, res, next) => {
   // here we pass an arrow function as an argument
   Product.fetchAll((products) => {
     // body of the arrow function
-    res.render("shop", {
+    res.render("shop/product-list", {
       prods: products,
       pageTitle: "Shop",
       path: "/",
