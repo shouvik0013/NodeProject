@@ -1,1 +1,5 @@
-[{"title":"book1"},{"title":"book2"},{"title":"Book7"},{"title":"hhskfhwe"}]
+[
+  { "title": "A New Title" },
+  { "title": "ANSI C" },
+  { "title": "Data Structures" }
+]

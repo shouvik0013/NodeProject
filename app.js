@@ -20,7 +20,7 @@ app.set("views", "views");
 
 // parses the incoming message
 app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a middleware
-// exposes public folder publically, so we can directly access them
+// exposing public folder, so we can directly access them
 app.use(express.static(path.join(rootDir, "public")));
 
 // adminRoutes is also a valid middleware
