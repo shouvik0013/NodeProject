@@ -8,7 +8,8 @@ const rootDir = require("../utils/path");
 // path for data file
 const p = path.join(rootDir, "data", "products.json");
 
-// helper function which returns array of content objects
+// helper function which produces an array of content objects
+// AND CALLS CB WITH ARRAY
 const getProductsFromFile = (cb) => {
   // here cb is a callback function
   // here cb expects an array as an argument
@@ -28,8 +29,11 @@ const getProductsFromFile = (cb) => {
 
 // CLASS DEFINITION
 class Product {
-  constructor(title) {
+  constructor(title, imageUrl, description, price) {
     this.title = title;
+    this.imageUrl = imageUrl;
+    this.description = description;
+    this.price = price;
   }
 
   save(res) {
