@@ -1,13 +1,13 @@
-// core modules
+/* CORE MODULES */
 const path = require("path");
 
-// third-party modules
+/* THIRD PARTY MODULES */
 const express = require("express");
 
-// local modules
+/* LOCAL MODULES */
 const shopController = require("../controllers/shop");
 
-// here router is also kind of app or a pluggable app
+// router is also kind of app or a pluggable app
 const router = express.Router();
 
 router.get("/", shopController.getIndex);

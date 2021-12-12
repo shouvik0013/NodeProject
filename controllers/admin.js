@@ -1,5 +1,6 @@
-const Product = require("../models/product");
+const Product = require("../models/product"); // Product is a class
 
+// ACTS LIKE MIDDLEWARE FUNCTION
 module.exports.getAddProduct = (req, res, next) => {
   res.render("admin/add-product", {
     pageTitle: "Add Product",
@@ -8,6 +9,7 @@ module.exports.getAddProduct = (req, res, next) => {
 };
 
 module.exports.getProducts = (req, res, next) => {
+  // here products is an array
   Product.fetchAll((products) => {
     res.render("admin/products", {
       path: "/admin/products",

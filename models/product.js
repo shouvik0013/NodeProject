@@ -8,7 +8,7 @@ const rootDir = require("../utils/path");
 // path for data file
 const p = path.join(rootDir, "data", "products.json");
 
-// helper function which produces an array of content objects
+// SIMPLY PRODUCES AN ARRAY AND CALLS CB WITH THAT ARRAY
 // AND CALLS CB WITH ARRAY
 const getProductsFromFile = (cb) => {
   // here cb is a callback function
@@ -18,7 +18,8 @@ const getProductsFromFile = (cb) => {
       cb([]); // passing an empty array
     } else {
       try {
-        cb(JSON.parse(fileContent)); // passing an array with items
+        const parsedArray = JSON.parse(fileContent);
+        cb(parsedArray); // passing an array with items
       } catch (error) {
         console.log("Error in file reading. Details: " + err);
         return cb([]); // passing an empty array
@@ -37,12 +38,13 @@ class Product {
   }
 
   save(res) {
-    // products is the array of the files which have been read
+    // products is the array of the objects which have been read from file
     getProductsFromFile((products) => {
       products.push(this); // pushes a new object into the array
       // the line below registers a callback function
       // when writing into file is done, callback function will be called
-      fs.writeFile(p, JSON.stringify(products), (err) => {
+      const productsArray = JSON.stringify(products);
+      fs.writeFile(p, productsArray, (err) => {
         console.log("Writing into file completed");
         if (err) {
           console.log(err);

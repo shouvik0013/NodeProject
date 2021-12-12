@@ -5,10 +5,14 @@ const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 
-// local modules
+/* local modules */
+
+// ROUTES
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+// UTILS
 const rootDir = require("./utils/path");
+// CONTROLLERS
 const errorController = require("./controllers/error");
 
 // express app
@@ -23,8 +27,8 @@ app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a mid
 // exposing public folder, so we can directly access them
 app.use(express.static(path.join(rootDir, "public")));
 
-// adminRoutes is also a valid middleware
-app.use("/admin", adminRoutes);
+/* SETTING UP ROUTES INTO app */
+app.use("/admin", adminRoutes); // adminRoutes is also a valid middleware
 app.use("/", shopRoutes);
 
 app.use(errorController.get404);

@@ -1,19 +1,20 @@
-const Product = require("../models/product"); // Product holds a class
+const Product = require("../models/product"); // Product  is a class
 
 module.exports.getProducts = (req, res, next) => {
   // here we pass an arrow function as an argument
+  // products is an array of objects
   Product.fetchAll((products) => {
     // body of the arrow function
     res.render("shop/product-list", {
       prods: products,
       pageTitle: "All Products",
       path: "/products",
-      hasProducts: products.length > 0 ? true : false,
     });
   });
 };
 
 module.exports.getIndex = (req, res, next) => {
+  // products is an array of objects
   Product.fetchAll((products) => {
     res.render("shop/index", {
       prods: products,
