@@ -2,8 +2,8 @@
 const path = require("path");
 
 // third-party modules
-const express = require("express");
-const bodyParser = require("body-parser");
+const express = require("express"); // EXPRESS
+const bodyParser = require("body-parser"); // BODY PARSER
 
 /* local modules */
 
@@ -15,7 +15,7 @@ const rootDir = require("./utils/path");
 // CONTROLLERS
 const errorController = require("./controllers/error");
 
-// express app
+// EXPRESS App
 const app = express();
 
 // setting templating engine

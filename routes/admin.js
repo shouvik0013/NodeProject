@@ -8,7 +8,7 @@ const adminController = require("../controllers/admin");
 // third party modules
 const express = require("express");
 
-// coding starts form here
+// CODES STARTS 
 const router = express.Router();
 
 // PATH: /admin/add-product
