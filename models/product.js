@@ -2,22 +2,22 @@
 const fs = require("fs");
 const path = require("path");
 
-// local modules
+// LOCAL MODULES
 const rootDir = require("../utils/path");
+const generateUniqueId = require('generate-unique-id');
 
 // path for data file
 const p = path.join(rootDir, "data", "products.json");
 
-// SIMPLY PRODUCES AN ARRAY AND CALLS CB WITH THAT ARRAY
-// AND CALLS CB WITH ARRAY
+// PRODUCES AN ARRAY AND CALLS CB WITH THAT ARRAY
 const getProductsFromFile = (cb) => {
-  // here cb is a callback function
   // here cb expects an array as an argument
   fs.readFile(p, (err, fileContent) => {
     if (err) {
       cb([]); // passing an empty array
     } else {
       try {
+        /** @type {Array} */
         const parsedArray = JSON.parse(fileContent);
         cb(parsedArray); // passing an array with items
       } catch (error) {
@@ -38,6 +38,8 @@ class Product {
   }
 
   save(res) {
+    // GENERATING UNIQUE-ID
+    this.id = generateUniqueId({ length: 10, useLetters: false });
     // products is the array of the objects which have been read from file
     getProductsFromFile((products) => {
       products.push(this); // pushes a new object into the array

@@ -1,8 +1,10 @@
+const express = require('express');
 const Product = require("../models/product"); // Product  is a class
 
 module.exports.getProducts = (req, res, next) => {
   // here we pass an arrow function as an argument
   // products is an array of objects
+  
   Product.fetchAll((products) => {
     // body of the arrow function
     res.render("shop/product-list", {
@@ -12,6 +14,18 @@ module.exports.getProducts = (req, res, next) => {
     });
   });
 };
+/**
+ * 
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {Function} next 
+ */
+module.exports.getProduct = (req, res, next) => {
+  /** @type {String} */
+  const prodId = req.params.productId;
+  console.log(prodId);
+  res.redirect('/');
+}
 
 module.exports.getIndex = (req, res, next) => {
   // products is an array of objects
