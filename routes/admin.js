@@ -1,5 +1,3 @@
-// UTILS
-const rootDirectoryPath = require("../utils/path"); // supplies the dirname of app.js
 // CONTROLLERS
 const adminController = require("../controllers/admin");
 // THIRD PARTY MODULES

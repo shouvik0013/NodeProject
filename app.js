@@ -10,7 +10,7 @@ const bodyParser = require("body-parser"); // BODY PARSER
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 // UTILS
-const rootDir = require("./utils/path");
+const rootDirectoryPath = require("./utils/path");
 // CONTROLLERS
 const errorController = require("./controllers/error");
 
@@ -24,9 +24,9 @@ app.set("views", "views");
 // PARSES INCOMMING REQUEST
 app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a middleware
 // EXPOSING public folder, so we can directly access them
-app.use(express.static(path.join(rootDir, "public")));
+app.use(express.static(path.join(rootDirectoryPath, "public")));
 
-/* SETTING UP ROUTES INTO app */
+// SETTING UP ROUTES INTO app 
 app.use("/admin", adminRoutes); // adminRoutes is also a valid middleware
 app.use("/", shopRoutes);
 
