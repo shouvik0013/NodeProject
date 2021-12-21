@@ -1,28 +1,31 @@
-// core modules
+// CORE MODULES
 const fs = require("fs");
 const path = require("path");
 
+// THIRD PARTY MODULES
+const express = require("express");
+
 // LOCAL MODULES
 const rootDir = require("../utils/path");
-const generateUniqueId = require('generate-unique-id');
+const generateUniqueId = require("generate-unique-id");
 
-// path for data file
-const p = path.join(rootDir, "data", "products.json");
+// PATH TO DATA FILE
+const pathToProductsData = path.join(rootDir, "data", "products.json");
 
 // PRODUCES AN ARRAY AND CALLS CB WITH THAT ARRAY
 const getProductsFromFile = (cb) => {
   // here cb expects an array as an argument
-  fs.readFile(p, (err, fileContent) => {
+  fs.readFile(pathToProductsData, (err, fileContent) => {
     if (err) {
       cb([]); // passing an empty array
     } else {
       try {
         /** @type {Array} */
         const parsedArray = JSON.parse(fileContent);
-        cb(parsedArray); // passing an array with items
+        cb(parsedArray); // CALL cb() WITH parsedArray
       } catch (error) {
         console.log("Error in file reading. Details: " + err);
-        return cb([]); // passing an empty array
+        return cb([]); // PASSING EMPTY ARRAY AS ARGUMENT
       }
     }
   });
@@ -37,16 +40,23 @@ class Product {
     this.price = price;
   }
 
+  /**
+   *
+   * @param {Express.Response} res
+   * SAVES THE CURRENT OBJECT AND REDIRECTS TO "/"
+   */
   save(res) {
     // GENERATING UNIQUE-ID
     this.id = generateUniqueId({ length: 10, useLetters: false });
-    // products is the array of the objects which have been read from file
+    // products -> ARRAY OF OBJECTS
     getProductsFromFile((products) => {
-      products.push(this); // pushes a new object into the array
-      // the line below registers a callback function
-      // when writing into file is done, callback function will be called
+      
+      products.push(this); // PUSHES CURRENT OBJECT TO THE ARRAY
+      
+      // CONVERTING products INTO JSON STRING
       const productsArray = JSON.stringify(products);
-      fs.writeFile(p, productsArray, (err) => {
+      // WRITING BACK THE UPDATED ARRAY INTO DISK
+      fs.writeFile(pathToProductsData, productsArray, (err) => {
         console.log("Writing into file completed");
         if (err) {
           console.log(err);
@@ -59,6 +69,21 @@ class Product {
   static fetchAll(cb) {
     // cb is a callback function
     getProductsFromFile(cb);
+  }
+
+  /**
+   *
+   * @param {String} id
+   * @param {Function} cb
+   */
+  static findById(id, cb) {
+    getProductsFromFile((products) => {
+      const productWithPassedId = products.find((product, index) => {
+        if (product.id === id) return true;
+        return false;
+      });
+      cb(productWithPassedId);
+    });
   }
 }
 

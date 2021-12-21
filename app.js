@@ -1,11 +1,10 @@
-// core modules
+// CORE MOUDLES
 const path = require("path");
 
-// third-party modules
+// THIRD PARTY
 const express = require("express"); // EXPRESS
 const bodyParser = require("body-parser"); // BODY PARSER
 
-/* local modules */
 
 // ROUTES
 const adminRoutes = require("./routes/admin");
@@ -18,13 +17,13 @@ const errorController = require("./controllers/error");
 // EXPRESS App
 const app = express();
 
-// setting templating engine
+// SETTING TEMPLATING ENGINE
 app.set("view engine", "ejs");
 app.set("views", "views");
 
-// parses the incoming message
+// PARSES INCOMMING REQUEST
 app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a middleware
-// exposing public folder, so we can directly access them
+// EXPOSING public folder, so we can directly access them
 app.use(express.static(path.join(rootDir, "public")));
 
 /* SETTING UP ROUTES INTO app */

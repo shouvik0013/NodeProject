@@ -1,14 +1,11 @@
-/* LOCAL MODULES */
-
 // UTILS
-const rootDir = require("../utils/path"); // supplies the dirname of app.js
+const rootDirectoryPath = require("../utils/path"); // supplies the dirname of app.js
 // CONTROLLERS
 const adminController = require("../controllers/admin");
-
-// third party modules
+// THIRD PARTY MODULES
 const express = require("express");
 
-// CODES STARTS 
+// CODE STARTS
 const router = express.Router();
 
 // PATH: /admin/add-product

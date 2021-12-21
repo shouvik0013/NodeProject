@@ -21,9 +21,14 @@ module.exports.getProducts = (req, res, next) => {
  * @param {Function} next 
  */
 module.exports.getProduct = (req, res, next) => {
-  /** @type {String} */
+  /**
+   *  @type {String} 
+   * GETTING productId FROM REQUEST URL
+  */
   const prodId = req.params.productId;
-  console.log(prodId);
+  Product.findById(prodId, (product) => {
+    console.log(product);
+  })
   res.redirect('/');
 }
 
