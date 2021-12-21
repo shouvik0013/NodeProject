@@ -54,6 +54,18 @@ module.exports.getCart = (req, res, next) => {
   });
 };
 
+/**
+ * 
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {Function} next 
+ */
+module.exports.postCart = (req, res, next) => {
+  const productId = req.body.productId;
+  console.log('Product id -> ' + productId);
+  res.redirect('/cart');
+}
+
 module.exports.getOrders = (req, res, next) => {
   res.render("shop/orders", {
     pageTitle: "Your Orders",
