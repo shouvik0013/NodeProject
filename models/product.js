@@ -75,6 +75,8 @@ class Product {
    *
    * @param {String} id
    * @param {Function} cb
+   * FINDS THE PRODUCT WITH THE SPECIFIC ID
+   * AND CALL cb WITH THE PRODUCT
    */
   static findById(id, cb) {
     getProductsFromFile((products) => {
