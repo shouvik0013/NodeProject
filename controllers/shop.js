@@ -2,6 +2,7 @@ const express = require("express");
 const Product = require("../models/product"); // Product  is a class
 const Cart = require('../models/cart');
 
+
 module.exports.getProducts = (req, res, next) => {
   // here we pass an arrow function as an argument
   // products is an array of objects
