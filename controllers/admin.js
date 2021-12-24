@@ -1,8 +1,16 @@
+// THIRD-PARTY PACKAGES 
 const express = require("express");
 
-const Product = require("../models/product"); // Product is a class
+// "Product" CLASS
+const Product = require("../models/product"); 
 
-// ACTS LIKE MIDDLEWARE FUNCTION
+/**
+ * 
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {Function} next 
+ * @returns {null}
+ */
 module.exports.getAddProduct = (req, res, next) => {
   res.render("admin/add-product", {
     pageTitle: "Add Product",
@@ -11,7 +19,7 @@ module.exports.getAddProduct = (req, res, next) => {
 };
 
 module.exports.getProducts = (req, res, next) => {
-  //  products IS AN ARRAY OF OBJECTS
+  //  products IS AN ARRAY OF ITEMS/OBJECTS
   Product.fetchAll((products) => {
     res.render("admin/products", {
       path: "/admin/products",
@@ -22,7 +30,7 @@ module.exports.getProducts = (req, res, next) => {
 };
 
 /**
- *
+ * SAVES A PRODUCT INTO THE DATABASE / FILE
  * @param {express.Request} req
  * @param {express.Response} res
  * @param {Function} next

@@ -12,7 +12,7 @@ const generateUniqueId = require("generate-unique-id");
 // PATH TO DATA FILE
 const pathToProductsData = path.join(rootDir, "data", "products.json");
 
-// PRODUCES AN ARRAY AND CALLS CB WITH THAT ARRAY
+// PRODUCES AN ARRAY AND CALLS "cb" WITH THAT ARRAY
 const getProductsFromFile = (cb) => {
   // here cb expects an array as an argument
   fs.readFile(pathToProductsData, (err, fileContent) => {
@@ -54,9 +54,9 @@ class Product {
       products.push(this); // PUSHES CURRENT OBJECT TO THE ARRAY
       
       // CONVERTING products INTO JSON STRING
-      const productsArray = JSON.stringify(products);
+      const productsArrayJsonString = JSON.stringify(products);
       // WRITING BACK THE UPDATED ARRAY INTO DISK
-      fs.writeFile(pathToProductsData, productsArray, (err) => {
+      fs.writeFile(pathToProductsData, productsArrayJsonString, (err) => {
         console.log("Writing into file completed");
         if (err) {
           console.log(err);
@@ -67,7 +67,7 @@ class Product {
   }
 
   static fetchAll(cb) {
-    // cb is a callback function
+    // "cb" IS A callback
     getProductsFromFile(cb);
   }
 

@@ -76,8 +76,14 @@ module.exports.getOrders = (req, res, next) => {
     path: "/orders",
   });
 };
-
-module.exports.getCheckout = (res, req, next) => {
+/**
+ * 
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {Function} next 
+ * @returns {null}
+ */
+module.exports.getCheckout = (req, res, next) => {
   res.render("shop/checkout", {
     pageTitle: "Checkout",
     path: "/checkout",

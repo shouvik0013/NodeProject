@@ -23,7 +23,7 @@ app.set("views", "views");
 
 // PARSES INCOMMING REQUEST
 app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a middleware
-// EXPOSING public folder, so we can directly access them
+// EXPOSING "public" FOLDER TO PROVIDE DIRECT ACCESS
 app.use(express.static(path.join(rootDirectoryPath, "public")));
 
 // SETTING UP ROUTES INTO app 
