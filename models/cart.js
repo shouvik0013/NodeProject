@@ -22,7 +22,7 @@ class Cart {
         try {
           cart = JSON.parse(fileContent);
         } catch (error) {
-          cart = { products: [], totalPrice: 0 };
+          console.log(error);
         }
       }
 

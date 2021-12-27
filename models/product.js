@@ -42,7 +42,7 @@ class Product {
 
   /**
    *
-   * @param {Express.Response} res
+   * @param {express.Response} res
    * SAVES THE CURRENT OBJECT AND REDIRECTS TO "/"
    */
   save(res) {
@@ -50,9 +50,8 @@ class Product {
     this.id = generateUniqueId({ length: 10, useLetters: false });
     // products -> ARRAY OF OBJECTS
     getProductsFromFile((products) => {
-      
       products.push(this); // PUSHES CURRENT OBJECT TO THE ARRAY
-      
+
       // CONVERTING products INTO JSON STRING
       const productsArrayJsonString = JSON.stringify(products);
       // WRITING BACK THE UPDATED ARRAY INTO DISK
@@ -72,20 +71,21 @@ class Product {
   }
 
   /**
-   *
-   * @param {String} id
-   * @param {Function} cb
    * FINDS THE PRODUCT WITH THE SPECIFIC ID
    * AND CALL cb WITH THE PRODUCT
+   * @param {String} id ID OF THE PRODUCT
+   * @param {Function} cb CALLBACK FUNCTION
    */
   static findById(id, cb) {
-    getProductsFromFile((products) => {
+    const findProductHandler = (products) => {
       const productWithPassedId = products.find((product, index) => {
         if (product.id === id) return true;
         return false;
       });
       cb(productWithPassedId);
-    });
+    };
+    
+    getProductsFromFile(findProductHandler);
   }
 }
 
