@@ -8,6 +8,7 @@ const express = require("express");
 // LOCAL MODULES
 const rootDir = require("../utils/path");
 const generateUniqueId = require("generate-unique-id");
+const { threadId } = require("worker_threads");
 
 // PATH TO DATA FILE
 const pathToProductsData = path.join(rootDir, "data", "products.json");
@@ -33,7 +34,8 @@ const getProductsFromFile = (cb) => {
 
 // CLASS DEFINITION
 class Product {
-  constructor(title, imageUrl, description, price) {
+  constructor(id, title, imageUrl, description, price) {
+    this.id = id;
     this.title = title;
     this.imageUrl = imageUrl;
     this.description = description;
@@ -45,25 +47,45 @@ class Product {
    * @param {express.Response} res
    * SAVES THE CURRENT OBJECT AND REDIRECTS TO "/"
    */
-  save(res) {
-    // GENERATING UNIQUE-ID
-    this.id = generateUniqueId({ length: 10, useLetters: false });
-    // products -> ARRAY OF OBJECTS
-    getProductsFromFile((products) => {
-      products.push(this); // PUSHES CURRENT OBJECT TO THE ARRAY
+  saveToFile(res) {
+    // CHECKING IF THE PRODUCT EXISTS OR NOT
+    if (this.id) {
+      getProductsFromFile((products) => {
+        const existingProductIndex = products.findIndex(
+          (prod) => prod.id === this.id
+        );
+        const copyProducts = [...products];
+        copyProducts[existingProductIndex] = this;
 
-      // CONVERTING products INTO JSON STRING
-      const productsArrayJsonString = JSON.stringify(products);
-      // WRITING BACK THE UPDATED ARRAY INTO DISK
-      fs.writeFile(pathToProductsData, productsArrayJsonString, (err) => {
-        
-        if (err) {
-          console.log(err);
-        }
-        console.log("Writing into file completed");
-        res.redirect("/");
+        const updatedProducts = copyProducts;
+
+        const updatedProductsJsonString = JSON.stringify(updatedProducts);
+        fs.writeFile(pathToProductsData, updatedProductsJsonString, (err) => {
+          if (err) {
+            console.log(err);
+            console.log("Failed to write into file");
+            return res.redirect("/");
+          }
+
+          console.log("Writing into file has been done");
+          return res.redirect("/admin/products");
+        });
       });
-    });
+    } else {
+      getProductsFromFile((products) => {
+        this.id = generateUniqueId({ length: 10, useLetters: false });
+        products.push(this);
+        const productsArrayJsonString = JSON.stringify(products);
+
+        fs.writeFile(pathToProductsData, productsArrayJsonString, (err) => {
+          if (err) {
+            console.log(err);
+          }
+          console.log("Writing into file completed");
+          res.redirect("/");
+        });
+      });
+    }
   }
 
   static fetchAll(cb) {
@@ -85,7 +107,7 @@ class Product {
       });
       cb(productWithPassedId);
     };
-    
+
     getProductsFromFile(findProductHandler);
   }
 }

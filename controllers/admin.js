@@ -71,7 +71,15 @@ module.exports.getEditProduct = (req, res, next) => {
  * @param {Function} next 
  */
 module.exports.postEditProduct = (req, res, next) => {
+  const updatedTitle = req.body.title;
+  const updatedImageUrl = req.body.imageUrl;
+  const updatedPrice = req.body.price;
+  const updatedDescription = req.body.description
+  const updatedId = req.body.productId;
 
+  const product = new Product(updatedId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice);
+
+  product.saveToFile(res);
 }
 
 /**
@@ -86,7 +94,7 @@ module.exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  const product = new Product(title, imageUrl, description, price);
-  product.save(res);
+  const product = new Product(null, title, imageUrl, description, price);
+  product.saveToFile(res);
   // res.redirect("/");
 };
