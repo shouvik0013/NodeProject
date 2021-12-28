@@ -56,10 +56,11 @@ class Product {
       const productsArrayJsonString = JSON.stringify(products);
       // WRITING BACK THE UPDATED ARRAY INTO DISK
       fs.writeFile(pathToProductsData, productsArrayJsonString, (err) => {
-        console.log("Writing into file completed");
+        
         if (err) {
           console.log(err);
         }
+        console.log("Writing into file completed");
         res.redirect("/");
       });
     });

@@ -65,6 +65,16 @@ module.exports.getEditProduct = (req, res, next) => {
 };
 
 /**
+ * 
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {Function} next 
+ */
+module.exports.postEditProduct = (req, res, next) => {
+
+}
+
+/**
  * SAVES A PRODUCT INTO THE DATABASE / FILE
  * @param {express.Request} req
  * @param {express.Response} res
