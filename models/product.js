@@ -9,14 +9,12 @@ const express = require("express");
 const rootDir = require("../utils/path");
 const generateUniqueId = require("generate-unique-id");
 
-
 // PATH TO DATA FILE
 const pathToProductsData = path.join(rootDir, "data", "products.json");
 
-
 /**
  * Fetch products from file and calls cb with products like cb(products)
- * @param {Function} cb callback Function 
+ * @param {Function} cb callback Function
  */
 const getProductsFromFile = (cb) => {
   // here cb expects an array as an argument
@@ -92,6 +90,11 @@ class Product {
     }
   }
 
+  /**
+   * Fetch all the products from the database or file and
+   * call cb with the products like cb(products)
+   * @param {Function} cb
+   */
   static fetchAll(cb) {
     // "cb" IS A callback
     getProductsFromFile(cb);
@@ -99,7 +102,7 @@ class Product {
 
   /**
    * FINDS THE PRODUCT WITH THE SPECIFIC ID
-   * AND CALL cb WITH THE PRODUCT
+   * AND CALL cb WITH THE PRODUCT LIKE cb(product)
    * @param {String} id ID OF THE PRODUCT
    * @param {Function} cb CALLBACK FUNCTION
    */
@@ -114,6 +117,34 @@ class Product {
 
     getProductsFromFile(findProductHandler);
   }
-}
 
+
+  /**
+   * Deletes product with specified id, write the updated array to the file
+   * and redirects to the '/admin/products'
+   * @param {String} id 
+   * @param {express.Response} res 
+   */
+  static deleteProductById(id, res) {
+    const deleteProductHandler = (products) => {
+      const indexOfProductToBeDeleted = products.findIndex((prod) => prod.id === id);
+      const copyOfProducts = [...products];
+      const deletedProduct = copyOfProducts.splice(indexOfProductToBeDeleted, 1);
+      console.log( 'Deleted product is ' + deletedProduct);
+      const updatedArrayOfProductsJsonString = JSON.stringify(copyOfProducts);
+
+      // WRITING BACK THE UPDATED ARRAY TO THE FILE
+      fs.writeFile(pathToProductsData, updatedArrayOfProductsJsonString, (err) => {
+        if (err) {
+          console.log(err);
+          return res.redirect('/admin/products');
+        }
+        console.log('Writing into file is done');
+        res.redirect('/admin/products');
+      })
+    };
+
+    getProductsFromFile(deleteProductHandler);
+  }
+}
 module.exports = Product;

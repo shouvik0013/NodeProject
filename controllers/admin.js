@@ -98,3 +98,14 @@ module.exports.postAddProduct = (req, res, next) => {
   product.saveToFile(res);
   // res.redirect("/");
 };
+
+/**
+ * Delete a specific product from the database/file
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {Function} next 
+ */
+module.exports.postDeleteProduct = (req, res, next) => {
+  const productId = req.body.productId;
+  Product.deleteProductById(productId, res);
+}
