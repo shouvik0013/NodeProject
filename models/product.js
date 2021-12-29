@@ -8,12 +8,16 @@ const express = require("express");
 // LOCAL MODULES
 const rootDir = require("../utils/path");
 const generateUniqueId = require("generate-unique-id");
-const { threadId } = require("worker_threads");
+
 
 // PATH TO DATA FILE
 const pathToProductsData = path.join(rootDir, "data", "products.json");
 
-// PRODUCES AN ARRAY AND CALLS "cb" WITH THAT ARRAY
+
+/**
+ * Fetch products from file and calls cb with products like cb(products)
+ * @param {Function} cb callback Function 
+ */
 const getProductsFromFile = (cb) => {
   // here cb expects an array as an argument
   fs.readFile(pathToProductsData, (err, fileContent) => {

@@ -75,9 +75,9 @@ module.exports.postEditProduct = (req, res, next) => {
   const updatedImageUrl = req.body.imageUrl;
   const updatedPrice = req.body.price;
   const updatedDescription = req.body.description
-  const updatedId = req.body.productId;
+  const productId = req.body.productId;
 
-  const product = new Product(updatedId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice);
+  const product = new Product(productId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice);
 
   product.saveToFile(res);
 }
