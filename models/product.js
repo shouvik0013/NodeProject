@@ -8,6 +8,7 @@ const express = require("express");
 // LOCAL MODULES
 const rootDir = require("../utils/path");
 const generateUniqueId = require("generate-unique-id");
+const Cart = require('./cart');
 
 
 // PATH TO DATA FILE
@@ -113,6 +114,18 @@ class Product {
     };
 
     getProductsFromFile(findProductHandler);
+  }
+
+  static deleteById(id, redirectCallback) {
+    getProductsFromFile((products) => {
+      const product = products.find(prod => prod.id === id);
+      const updatedProducts = products.filter((prod) => prod.id !== id);
+      fs.writeFile(pathToProductsData, JSON.stringify(updatedProducts), (err) => {
+        if (!err) {
+          Cart.deleteProduct(id, product.price, redirectCallback);
+        }
+      })
+    })
   }
 }
 

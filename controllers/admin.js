@@ -98,3 +98,18 @@ module.exports.postAddProduct = (req, res, next) => {
   product.saveToFile(res);
   // res.redirect("/");
 };
+
+/**
+ * 
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {Function} next 
+ */
+module.exports.postDeleteProduct = (req, res, next) => {
+  const productId = req.body.productId;
+  console.log('ID of the product to be deleted is ' + productId);
+  const redirectCallBack = () => {
+    return res.redirect('/admin/products');
+  }
+  Product.deleteById(productId, redirectCallBack);
+}
