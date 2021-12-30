@@ -30,7 +30,7 @@ const getProductsFromFile = (cb) => {
         const parsedArray = JSON.parse(fileContent);
         cb(parsedArray); // CALL cb() WITH parsedArray
       } catch (error) {
-        console.log("Error in file reading. Details: " + err);
+        console.log("Error in converting file-content into an Array. Details: " + err);
         return cb([]); // PASSING EMPTY ARRAY AS ARGUMENT
       }
     }
@@ -59,12 +59,11 @@ class Product {
         const existingProductIndex = products.findIndex(
           (prod) => prod.id === this.id
         );
-        const copyProducts = [...products];
-        copyProducts[existingProductIndex] = this;
+        const updatedProductsArray = [...products];
+        updatedProductsArray[existingProductIndex] = this;
+        
+        const updatedProductsJsonString = JSON.stringify(updatedProductsArray)
 
-        const updatedProducts = copyProducts;
-
-        const updatedProductsJsonString = JSON.stringify(updatedProducts);
         fs.writeFile(pathToProductsData, updatedProductsJsonString, (err) => {
           if (err) {
             console.log(err);
@@ -85,6 +84,7 @@ class Product {
         fs.writeFile(pathToProductsData, productsArrayJsonString, (err) => {
           if (err) {
             console.log(err);
+            return res.redirect('/admin/products');
           }
           console.log("Writing into file completed");
           res.redirect("/");
@@ -93,6 +93,10 @@ class Product {
     }
   }
 
+  /**
+   * Fetch all products from file and call cb with products like cb(products)
+   * @param {Fuction} cb callback function 
+   */
   static fetchAll(cb) {
     // "cb" IS A callback
     getProductsFromFile(cb);
@@ -100,7 +104,7 @@ class Product {
 
   /**
    * FINDS THE PRODUCT WITH THE SPECIFIC ID
-   * AND CALL cb WITH THE PRODUCT
+   * AND CALL cb WITH THE PRODUCT LIKE cb(product)
    * @param {String} id ID OF THE PRODUCT
    * @param {Function} cb CALLBACK FUNCTION
    */
@@ -119,8 +123,8 @@ class Product {
   static deleteById(id, redirectCallback) {
     getProductsFromFile((products) => {
       const product = products.find(prod => prod.id === id);
-      const updatedProducts = products.filter((prod) => prod.id !== id);
-      fs.writeFile(pathToProductsData, JSON.stringify(updatedProducts), (err) => {
+      const updatedProductsWithoutProductWithSpecificID = products.filter((prod) => prod.id !== id);
+      fs.writeFile(pathToProductsData, JSON.stringify(updatedProductsWithoutProductWithSpecificID), (err) => {
         if (!err) {
           Cart.deleteProduct(id, product.price, redirectCallback);
         }

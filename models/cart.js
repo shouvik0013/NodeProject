@@ -32,17 +32,17 @@ class Cart {
       );
       const existingProduct = cart.products[existingProductIndex];
 
-      let updatedProduct;
+      let productToBeAddedOrUpdated;
 
       // ADD A NEW PRODUCT OR INCREASE THE QUANTITY
       if (existingProduct) {
-        updatedProduct = { ...existingProduct };
+        productToBeAddedOrUpdated = { ...existingProduct };
         // INCREASE qty BY ONE
-        updatedProduct.qty = updatedProduct.qty + 1;
-        cart.products[existingProductIndex] = updatedProduct;
+        productToBeAddedOrUpdated.qty = productToBeAddedOrUpdated.qty + 1;
+        cart.products[existingProductIndex] = productToBeAddedOrUpdated;
       } else {
-        updatedProduct = { id: id, qty: 1 };
-        cart.products = [...cart.products, updatedProduct];
+        productToBeAddedOrUpdated = { id: id, qty: 1 };
+        cart.products = [...cart.products, productToBeAddedOrUpdated];
       }
       cart.totalPrice = cart.totalPrice + productPrice;
 
@@ -73,6 +73,21 @@ class Cart {
         redirectCallback();
       })
     });
+  }
+
+  /**
+   * Fetches the cart from database/file &
+   * calls cb with the cart like cb(cart)
+   * @param {Function} cb Callback function
+   */
+  static getCart(cb) {
+    fs.readFile(pathToCartData, (err, fileContent) => {
+      const cart = JSON.parse(fileContent);
+      if (err) {
+        return cb(null);
+      }
+      cb(cart);
+    })
   }
 }
 

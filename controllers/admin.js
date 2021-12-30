@@ -31,7 +31,7 @@ module.exports.getProducts = (req, res, next) => {
 };
 
 /**
- *
+ * Edits a product and saves it into file
  * @param {express.Request} req
  * @param {express.Response} res
  * @param {Function} next
@@ -100,7 +100,8 @@ module.exports.postAddProduct = (req, res, next) => {
 };
 
 /**
- * 
+ * Deletes product from file/database &
+ * if present in Cart also deletes the product
  * @param {express.Request} req 
  * @param {express.Response} res 
  * @param {Function} next 

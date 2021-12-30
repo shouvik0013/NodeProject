@@ -10,14 +10,19 @@ const shopController = require("../controllers/shop");
 // router is also kind of app or a pluggable app
 const router = express.Router();
 
+// PATH: /
 router.get("/", shopController.getIndex);
 
+// PATH: /products
 router.get("/products", shopController.getProducts);
 
+// PATH: /products/874729902
 router.get("/products/:productId", shopController.getProduct);
 
+// PATH: /cart
 router.get("/cart", shopController.getCart);
 
+// PATH: /cart
 router.post('/cart', shopController.postCart);
 
 router.get("/orders", shopController.getOrders);
