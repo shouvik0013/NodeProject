@@ -53,6 +53,13 @@ class Cart {
     });
   }
 
+
+  /**
+   * Deletes product with passed ID
+   * @param {String} id ID of the product
+   * @param {String} productPrice price per unit of the product
+   * @param {Function} redirectCallback Callback function
+   */
   static deleteProduct(id, productPrice, redirectCallback) {
     fs.readFile(pathToCartData, (err, fileContent) => {
       if (err) {
@@ -60,6 +67,9 @@ class Cart {
       }
       const updatedCart = JSON.parse(fileContent);
       const product = updatedCart.products.find((prod) => prod.id === id);
+      if (!product) {
+        return redirectCallback();
+      }
       const productQty = product.qty;
       updatedCart.products = updatedCart.products.filter(
         (prod) => prod.id !== product.id

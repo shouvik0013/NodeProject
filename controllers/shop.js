@@ -94,6 +94,26 @@ module.exports.postCart = (req, res, next) => {
   res.redirect("/cart");
 };
 
+/**
+ * 
+ * @param {express.Request} req 
+ * @param {express.Response} res 
+ * @param {Function} next 
+ */
+module.exports.postCartDeleteProduct = (req, res, next) => {
+  const productId = req.body.productId;
+  const redirectCallBack = () => {
+    return res.redirect('/cart');
+  }
+  Product.findById(productId, (product) => {
+    if (!product) {
+      console.log('Failed to remove item from the cart');
+      return res.redirect('/cart');
+    }
+    Cart.deleteProduct(product.id, product.price, redirectCallBack);
+  })
+}
+
 module.exports.getOrders = (req, res, next) => {
   res.render("shop/orders", {
     pageTitle: "Your Orders",

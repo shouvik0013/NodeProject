@@ -123,8 +123,8 @@ class Product {
   static deleteById(id, redirectCallback) {
     getProductsFromFile((products) => {
       const product = products.find(prod => prod.id === id);
-      const updatedProductsWithoutProductWithSpecificID = products.filter((prod) => prod.id !== id);
-      fs.writeFile(pathToProductsData, JSON.stringify(updatedProductsWithoutProductWithSpecificID), (err) => {
+      const productsWithoutProductWithPassedID = products.filter((prod) => prod.id !== id);
+      fs.writeFile(pathToProductsData, JSON.stringify(productsWithoutProductWithPassedID), (err) => {
         if (!err) {
           Cart.deleteProduct(id, product.price, redirectCallback);
         }
