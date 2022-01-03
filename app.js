@@ -5,12 +5,12 @@ const path = require("path");
 const express = require("express"); // EXPRESS
 const bodyParser = require("body-parser"); // BODY PARSER
 
-
 // ROUTES
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 // UTILS
 const rootDirectoryPath = require("./utils/path");
+const db = require("./utils/database");
 // CONTROLLERS
 const errorController = require("./controllers/error");
 
@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a mid
 // EXPOSING "public" FOLDER TO PROVIDE DIRECT ACCESS
 app.use(express.static(path.join(rootDirectoryPath, "public")));
 
-// SETTING UP ROUTES INTO app 
+// SETTING UP ROUTES INTO app
 app.use("/admin", adminRoutes); // adminRoutes is also a valid middleware
 app.use("/", shopRoutes);
 

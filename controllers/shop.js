@@ -3,17 +3,15 @@ const Product = require("../models/product"); // Product  is a class
 const Cart = require("../models/cart");
 
 module.exports.getProducts = (req, res, next) => {
-  // here we pass an arrow function as an argument
-  // products is an array of objects
-
-  Product.fetchAll((products) => {
-    // body of the arrow function
-    res.render("shop/product-list", {
-      prods: products,
-      pageTitle: "All Products",
-      path: "/products",
-    });
-  });
+  Product.fetchAll()
+    .then(([row, fieldData]) => {
+      res.render("shop/product-list", {
+        prods: row,
+        pageTitle: "All Products",
+        path: "/products",
+      });
+    })
+    .catch((err) => console.log(err));
 };
 /**
  * Fetches the specific products &
@@ -48,13 +46,21 @@ module.exports.getProduct = (req, res, next) => {
  */
 module.exports.getIndex = (req, res, next) => {
   // products is an array of objects
-  Product.fetchAll((products) => {
-    res.render("shop/index", {
-      prods: products,
-      pageTitle: "Shop",
-      path: "/",
-    });
-  });
+  Product.fetchAll()
+    .then(([rows, fieldData]) => {
+      res.render("shop/index", {
+        prods: rows,
+        pageTitle: "Shop",
+        path: "/",
+      });
+    })
+    .catch((err) => console.log(err));
+
+  // res.render("shop/index", {
+  //   prods: products,
+  //   pageTitle: "Shop",
+  //   path: "/",
+  // });
 };
 
 module.exports.getCart = (req, res, next) => {
@@ -95,24 +101,24 @@ module.exports.postCart = (req, res, next) => {
 };
 
 /**
- * 
- * @param {express.Request} req 
- * @param {express.Response} res 
- * @param {Function} next 
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {Function} next
  */
 module.exports.postCartDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
   const redirectCallBack = () => {
-    return res.redirect('/cart');
-  }
+    return res.redirect("/cart");
+  };
   Product.findById(productId, (product) => {
     if (!product) {
-      console.log('Failed to remove item from the cart');
-      return res.redirect('/cart');
+      console.log("Failed to remove item from the cart");
+      return res.redirect("/cart");
     }
     Cart.deleteProduct(product.id, product.price, redirectCallBack);
-  })
-}
+  });
+};
 
 module.exports.getOrders = (req, res, next) => {
   res.render("shop/orders", {
