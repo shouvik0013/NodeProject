@@ -8,9 +8,11 @@ const bodyParser = require("body-parser"); // BODY PARSER
 // ROUTES
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
+
 // UTILS
 const rootDirectoryPath = require("./utils/path");
 const sequelize = require("./utils/database");
+
 // CONTROLLERS
 const errorController = require("./controllers/error");
 
