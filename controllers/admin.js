@@ -15,7 +15,7 @@ module.exports.getAddProduct = (req, res, next) => {
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
-    editing: false
+    editing: false,
   });
 };
 
@@ -41,8 +41,8 @@ module.exports.getEditProduct = (req, res, next) => {
   const editQuery = req.query.edit;
   let editMode = true;
 
-  if (editQuery !== 'true') {
-    editMode = false
+  if (editQuery !== "true") {
+    editMode = false;
   }
 
   if (!editMode) {
@@ -59,31 +59,37 @@ module.exports.getEditProduct = (req, res, next) => {
       pageTitle: "Edit Product",
       path: "/admin/edit-product",
       editing: editMode,
-      product: product
+      product: product,
     });
   });
 };
 
 /**
- * 
- * @param {express.Request} req 
- * @param {express.Response} res 
- * @param {Function} next 
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {Function} next
  */
 module.exports.postEditProduct = (req, res, next) => {
   const updatedTitle = req.body.title;
   const updatedImageUrl = req.body.imageUrl;
   const updatedPrice = req.body.price;
-  const updatedDescription = req.body.description
+  const updatedDescription = req.body.description;
   const productId = req.body.productId;
 
-  const product = new Product(productId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice);
+  const product = new Product(
+    productId,
+    updatedTitle,
+    updatedImageUrl,
+    updatedDescription,
+    updatedPrice
+  );
 
   product.saveToFile(res);
-}
+};
 
 /**
- * SAVES A PRODUCT INTO THE DATABASE / FILE
+ * SAVES A PRODUCT INTO THE DATABASE
  * @param {express.Request} req
  * @param {express.Response} res
  * @param {Function} next
@@ -94,23 +100,28 @@ module.exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  const product = new Product(null, title, imageUrl, description, price);
-  product.saveToFile(res);
-  // res.redirect("/");
+  Product.create({
+    title: title,
+    description: description,
+    price: price,
+    imageUrl: imageUrl
+  }).then(result => {
+    console.log(result);
+  }).catch(err => console.log(err));
 };
 
 /**
  * Deletes product from file/database &
  * if present in Cart also deletes the product
- * @param {express.Request} req 
- * @param {express.Response} res 
- * @param {Function} next 
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {Function} next
  */
 module.exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  console.log('ID of the product to be deleted is ' + productId);
+  console.log("ID of the product to be deleted is " + productId);
   const redirectCallBack = () => {
-    return res.redirect('/admin/products');
-  }
+    return res.redirect("/admin/products");
+  };
   Product.deleteById(productId, redirectCallBack);
-}
+};

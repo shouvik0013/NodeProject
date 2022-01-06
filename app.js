@@ -10,7 +10,7 @@ const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 // UTILS
 const rootDirectoryPath = require("./utils/path");
-const db = require("./utils/database");
+const sequelize = require("./utils/database");
 // CONTROLLERS
 const errorController = require("./controllers/error");
 
@@ -37,4 +37,10 @@ app.use(errorController.get404);
 
 // server.listen(3000);
 
-app.listen(3000);
+sequelize
+  .sync()
+  .then((result) => {
+    console.log(result);
+    app.listen(3000);
+  })
+  .catch((err) => console.log(err));

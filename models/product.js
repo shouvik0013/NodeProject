@@ -1,52 +1,32 @@
+const { Sequelize, Model, DataTypes } = require("sequelize");
 
-// THIRD PARTY MODULES
-const express = require("express");
+const sequelize = require("../utils/database");
 
-// LOCAL MODULES
-const generateUniqueId = require("generate-unique-id");
-const db = require('../utils/database');
-const Cart = require('./cart');
+const Product = sequelize.define("Product", {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    allowNull: false,
+    primaryKey: true,
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  imageUrl: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  price: {
+    type: DataTypes.DOUBLE,
+    allowNull: false,
+  },
+});
 
-
-
-
-
-// CLASS DEFINITION
-class Product {
-  constructor(id, title, imageUrl, description, price) {
-    this.id = id;
-    this.title = title;
-    this.imageUrl = imageUrl;
-    this.description = description;
-    this.price = price;
-  }
-
-  /**
-   *
-   * @param {express.Response} res
-   * SAVES THE CURRENT OBJECT AND REDIRECTS TO "/"
-   */
-  saveToFile(res) {
-    
-  }
-
-  /**
-   * Returns a Promise of fetched data from database
-   * @returns {Promise}
-   */
-  static fetchAll() {
-    return db.execute('SELECT * FROM products;'); 
-    // db.excute() RETURNS A PROMISE
-  }
-
-  
-  static findById(id) {
-    
-  }
-
-  static deleteById(id) {
-    
-  }
-}
 
 module.exports = Product;

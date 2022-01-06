@@ -3,10 +3,10 @@ const Product = require("../models/product"); // Product  is a class
 const Cart = require("../models/cart");
 
 module.exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
-    .then(([row, fieldData]) => {
+  Product.findAll()
+    .then((products) => {
       res.render("shop/product-list", {
-        prods: row,
+        prods: products,
         pageTitle: "All Products",
         path: "/products",
       });
@@ -26,14 +26,26 @@ module.exports.getProduct = (req, res, next) => {
    *  @type {String}
    * GETTING productId FROM REQUEST URL
    */
-  const prodId = req.params.productId;
-  Product.findById(prodId, (product) => {
-    res.render("shop/product-detail", {
-      product: product,
-      pageTitle: product.title,
-      path: "/products",
-    });
-  });
+  const prodId = Number(req.params.productId);
+
+  Product.findAll({ where: { id: prodId } })
+    .then(products => {
+      const [product, ...otherProuducts] = products;
+      res.render('shop/product-detail', {
+            product: product,
+            pageTitle: product.title,
+            path: '/products'
+          })
+    })
+    .catch((err) => console.log(err));
+
+  // Product.findByPk(prodId).then(product => {
+  //   res.render('shop/product-detail', {
+  //     product: product,
+  //     pageTitle: product.title,
+  //     path: '/products'
+  //   })
+  // }).catch(err => console.log(err));
 };
 
 /**
@@ -45,22 +57,15 @@ module.exports.getProduct = (req, res, next) => {
  * @returns {null}
  */
 module.exports.getIndex = (req, res, next) => {
-  // products is an array of objects
-  Product.fetchAll()
-    .then(([rows, fieldData]) => {
+  Product.findAll()
+    .then((products) => {
       res.render("shop/index", {
-        prods: rows,
+        prods: products,
         pageTitle: "Shop",
         path: "/",
       });
     })
     .catch((err) => console.log(err));
-
-  // res.render("shop/index", {
-  //   prods: products,
-  //   pageTitle: "Shop",
-  //   path: "/",
-  // });
 };
 
 module.exports.getCart = (req, res, next) => {
