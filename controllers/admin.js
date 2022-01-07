@@ -20,7 +20,8 @@ module.exports.getAddProduct = (req, res, next) => {
 };
 
 module.exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  req.user
+    .getProducts()
     .then((products) => {
       res.render("admin/products", {
         path: "/admin/products",
@@ -51,8 +52,11 @@ module.exports.getEditProduct = (req, res, next) => {
   }
 
   const productId = req.params.productId;
-  Product.findByPk(productId)
-    .then((product) => {
+  // Product.findByPk(productId)
+  req.user
+    .getProducts({ where: { id: productId } })
+    .then((products) => {
+      const product = products[0];
       if (!product) {
         console.log("No product found");
         return res.redirect("/");
@@ -116,12 +120,14 @@ module.exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
 
-  Product.create({
-    title: title,
-    description: description,
-    price: price,
-    imageUrl: imageUrl,
-  })
+  req.user
+    .createProduct({
+      title: title,
+      description: description,
+      price: price,
+      imageUrl: imageUrl,
+      UserId: req.user.id,
+    })
     .then((result) => {
       console.log("Product saved");
       res.redirect("/admin/products");

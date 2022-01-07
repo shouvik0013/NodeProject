@@ -13,6 +13,10 @@ const shopRoutes = require("./routes/shop");
 const rootDirectoryPath = require("./utils/path");
 const sequelize = require("./utils/database");
 
+// MODELS
+const Product = require("./models/product");
+const User = require("./models/user");
+
 // CONTROLLERS
 const errorController = require("./controllers/error");
 
@@ -28,21 +32,53 @@ app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a mid
 // EXPOSING "public" FOLDER TO PROVIDE DIRECT ACCESS
 app.use(express.static(path.join(rootDirectoryPath, "public")));
 
+/**
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {Function} next
+ */
+app.use((req, res, next) => {
+  User.findByPk(1)
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
 // SETTING UP ROUTES INTO app
 app.use("/admin", adminRoutes); // adminRoutes is also a valid middleware
 app.use("/", shopRoutes);
 
 app.use(errorController.get404);
 
-// here app is also a valid request handler
-// const server = http.createServer(app);
-
-// server.listen(3000);
+// IN CREATING SENSE. A PRODUCT IS ADDED BY ONE USER
+// AND AN USER CAN ADD MULTIPLE PRODUCTS    
+Product.belongsTo(User, {
+  constraints: true,
+  onDelete: "CASCADE",
+});
+User.hasMany(Product);
 
 sequelize
+  // .sync({ force: true })
   .sync()
   .then((result) => {
-    console.log(result);
+    return User.findByPk(1);
+  })
+  .then((user) => {
+    if (!user) {
+      return User.create({
+        name: "Shouvik",
+        email: "shouvik0013@gmail.com",
+      });
+    }
+    return Promise.resolve(user);
+  })
+  .then((user) => {
+    console.log(user);
     app.listen(3000);
   })
   .catch((err) => console.log(err));
