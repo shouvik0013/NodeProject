@@ -97,7 +97,7 @@ module.exports.postEditProduct = (req, res, next) => {
       // product.description = updatedDescription;
       // product.imageUrl = updatedImageUrl;
 
-      product.set({
+      product.update({
         title: updatedTitle,
         price: updatedPrice,
         description: updatedDescription,
