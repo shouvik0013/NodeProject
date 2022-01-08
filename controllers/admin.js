@@ -5,7 +5,7 @@ const express = require("express");
 const Product = require("../models/product");
 
 /**
- *
+ * Renders the AddProduct Page
  * @param {express.Request} req
  * @param {express.Response} res
  * @param {Function} next
@@ -92,12 +92,19 @@ module.exports.postEditProduct = (req, res, next) => {
         return res.redirect("/");
       }
 
-      product.title = updatedTitle;
-      product.price = updatedPrice;
-      product.description = updatedDescription;
-      product.imageUrl = updatedImageUrl;
+      // product.title = updatedTitle;
+      // product.price = updatedPrice;
+      // product.description = updatedDescription;
+      // product.imageUrl = updatedImageUrl;
 
-      // saving the product back to database
+      product.set({
+        title: updatedTitle,
+        price: updatedPrice,
+        description: updatedDescription,
+        imageUrl: updatedImageUrl
+      })
+
+      // SAVING THE PRODUCT INTO THE DATABASE
       return product.save();
     })
     .then((result) => {
