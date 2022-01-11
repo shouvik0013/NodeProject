@@ -16,6 +16,8 @@ const sequelize = require("./utils/database");
 // MODELS
 const Product = require("./models/product");
 const User = require("./models/user");
+const Cart = require("./models/cart");
+const CartItems = require("./models/cart-item");
 
 // CONTROLLERS
 const errorController = require("./controllers/error");
@@ -55,18 +57,24 @@ app.use("/", shopRoutes);
 app.use(errorController.get404);
 
 // IN CREATING SENSE. A PRODUCT IS ADDED BY ONE USER
-// AND AN USER CAN ADD MULTIPLE PRODUCTS    
+// AND AN USER CAN ADD MULTIPLE PRODUCTS
+User.hasMany(Product);
 Product.belongsTo(User, {
   constraints: true,
   onDelete: "CASCADE",
 });
-User.hasMany(Product);
+
+User.hasOne(Cart);
+Cart.belongsTo(User);
+
+Product.belongsToMany(Cart, { through: CartItems });
+Cart.belongsToMany(Product, { through: CartItems });
 
 sequelize
   // .sync({ force: true })
   .sync()
   .then((result) => {
-    return User.findByPk(1);
+    return User.findByPk(1); // THIS LINE ALSO RETURNS A PROMISE
   })
   .then((user) => {
     if (!user) {
@@ -79,6 +87,10 @@ sequelize
   })
   .then((user) => {
     console.log(user);
+    return user.createCart()
+  })
+  .then(cart => {
+    console.log(cart);
     app.listen(3000);
   })
   .catch((err) => console.log(err));

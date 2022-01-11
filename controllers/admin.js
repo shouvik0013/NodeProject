@@ -4,6 +4,9 @@ const express = require("express");
 // "Product" CLASS
 const Product = require("../models/product");
 
+// Sequelize
+const { Sequelize, Model, DataTypes, Op } = require("sequelize");
+
 /**
  * Renders the AddProduct Page
  * @param {express.Request} req
@@ -19,6 +22,13 @@ module.exports.getAddProduct = (req, res, next) => {
   });
 };
 
+/**
+ * Fetches all products from database and
+ * renders them to the page
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {Function} next
+ */
 module.exports.getProducts = (req, res, next) => {
   req.user
     .getProducts()
@@ -54,7 +64,13 @@ module.exports.getEditProduct = (req, res, next) => {
   const productId = req.params.productId;
   // Product.findByPk(productId)
   req.user
-    .getProducts({ where: { id: productId } })
+    .getProducts({
+      where: {
+        id: {
+          [Op.eq]: productId,
+        },
+      },
+    })
     .then((products) => {
       const product = products[0];
       if (!product) {
@@ -101,8 +117,8 @@ module.exports.postEditProduct = (req, res, next) => {
         title: updatedTitle,
         price: updatedPrice,
         description: updatedDescription,
-        imageUrl: updatedImageUrl
-      })
+        imageUrl: updatedImageUrl,
+      });
 
       // SAVING THE PRODUCT INTO THE DATABASE
       return product.save();

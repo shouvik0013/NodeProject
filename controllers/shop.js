@@ -29,13 +29,13 @@ module.exports.getProduct = (req, res, next) => {
   const prodId = Number(req.params.productId);
 
   Product.findAll({ where: { id: prodId } })
-    .then(products => {
+    .then((products) => {
       const [product, ...otherProuducts] = products;
-      res.render('shop/product-detail', {
-            product: product,
-            pageTitle: product.title,
-            path: '/products'
-          })
+      res.render("shop/product-detail", {
+        product: product,
+        pageTitle: product.title,
+        path: "/products",
+      });
     })
     .catch((err) => console.log(err));
 
@@ -69,25 +69,19 @@ module.exports.getIndex = (req, res, next) => {
 };
 
 module.exports.getCart = (req, res, next) => {
-  Cart.getCart((cart) => {
-    Product.fetchAll((products) => {
-      const cartProducts = [];
-      for (product of products) {
-        const cartProductData = cart.products.find(
-          (prod) => prod.id === product.id
-        );
-        if (cartProductData) {
-          cartProducts.push({ productData: product, qty: cartProductData.qty });
-        }
-      }
-
+  req.user
+    .getCart()
+    .then((cart) => {
+      return cart.getProducts();
+    })
+    .then(products => {
       res.render("shop/cart", {
         pageTitle: "Your Cart",
-        products: cartProducts,
+        products: products,
         path: "/cart",
       });
-    });
-  });
+    })
+    .catch((err) => console.log(err));
 };
 
 /**
