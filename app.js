@@ -64,9 +64,11 @@ Product.belongsTo(User, {
   onDelete: "CASCADE",
 });
 
+// ASSOCIATION BETWEEN USER & CART
 User.hasOne(Cart);
 Cart.belongsTo(User);
 
+// ASSOCIATION BETWEEN PRODUCT & CART
 Product.belongsToMany(Cart, { through: CartItems });
 Cart.belongsToMany(Product, { through: CartItems });
 

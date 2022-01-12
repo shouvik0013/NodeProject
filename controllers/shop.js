@@ -1,7 +1,9 @@
 const express = require("express");
 const Product = require("../models/product"); // Product  is a class
 const Cart = require("../models/cart");
+const CartItem = require("../models/cart-item");
 
+const { Sequelize, Model, DataTypes, Op } = require("sequelize");
 module.exports.getProducts = (req, res, next) => {
   Product.findAll()
     .then((products) => {
@@ -74,7 +76,7 @@ module.exports.getCart = (req, res, next) => {
     .then((cart) => {
       return cart.getProducts();
     })
-    .then(products => {
+    .then((products) => {
       res.render("shop/cart", {
         pageTitle: "Your Cart",
         products: products,
@@ -92,11 +94,51 @@ module.exports.getCart = (req, res, next) => {
  */
 module.exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
-  console.log("Product id -> " + productId);
-  Product.findById(productId, (product) => {
-    Cart.addProduct(product.id, Number(product.price));
-  });
-  res.redirect("/cart");
+  let fetchedCart;
+  req.user
+    .getCart()
+    .then((cart) => {
+      fetchedCart = cart;
+      return cart.getProducts({
+        where: {
+          id: {
+            [Op.eq]: productId,
+          },
+        },
+      });
+    })
+    .then((products) => {
+      let product;
+      if (products.length > 0) {
+        product = products[0];
+      }
+
+      let newQuantity = 1;
+
+      if (product) {
+        const oldQunatity = product.CartItems.quantity;
+        newQuantity = oldQunatity + 1;
+        return product.addCart(fetchedCart, {
+          through: {
+            quantity: newQuantity,
+          },
+        });
+      }
+      // THIS POINT WE DONT HAVE THE SPECIFIED PRODUCT
+      return Product.findByPk(productId)
+        .then((product) => {
+          fetchedCart.addProduct(product, {
+            through: {
+              quantity: newQuantity,
+            },
+          });
+        })
+        .catch((err) => console.log(err));
+    })
+    .then(() => {
+      res.redirect("/cart");
+    })
+    .catch((err) => console.log(err));
 };
 
 /**
