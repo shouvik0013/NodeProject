@@ -95,6 +95,7 @@ module.exports.getCart = (req, res, next) => {
 module.exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
   let fetchedCart;
+  let newQuantity = 1;
   req.user
     .getCart()
     .then((cart) => {
@@ -113,27 +114,20 @@ module.exports.postCart = (req, res, next) => {
         product = products[0];
       }
 
-      let newQuantity = 1;
-
       if (product) {
         const oldQunatity = product.CartItems.quantity;
         newQuantity = oldQunatity + 1;
-        return product.addCart(fetchedCart, {
-          through: {
-            quantity: newQuantity,
-          },
-        });
+        return Promise.resolve(product);
       }
       // THIS POINT WE DONT HAVE THE SPECIFIED PRODUCT
-      return Product.findByPk(productId)
-        .then((product) => {
-          fetchedCart.addProduct(product, {
-            through: {
-              quantity: newQuantity,
-            },
-          });
-        })
-        .catch((err) => console.log(err));
+      return Product.findByPk(productId);
+    })
+    .then((product) => {
+      return product.addCart(fetchedCart, {
+        through: {
+          quantity: newQuantity,
+        },
+      });
     })
     .then(() => {
       res.redirect("/cart");
@@ -149,16 +143,23 @@ module.exports.postCart = (req, res, next) => {
  */
 module.exports.postCartDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  const redirectCallBack = () => {
-    return res.redirect("/cart");
-  };
-  Product.findById(productId, (product) => {
-    if (!product) {
-      console.log("Failed to remove item from the cart");
-      return res.redirect("/cart");
-    }
-    Cart.deleteProduct(product.id, product.price, redirectCallBack);
-  });
+  req.user
+    .getCart()
+    .then((cart) => {
+      return cart.getProducts({
+        where: {
+          id: productId,
+        },
+      });
+    })
+    .then((products) => {
+      const product = products[0];
+      return product.CartItems.destroy();
+    })
+    .then(() => {
+      res.redirect("/cart");
+    })
+    .catch((err) => console.log(err));
 };
 
 module.exports.getOrders = (req, res, next) => {
