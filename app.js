@@ -18,6 +18,8 @@ const Product = require("./models/product");
 const User = require("./models/user");
 const Cart = require("./models/cart");
 const CartItems = require("./models/cart-item");
+const Order = require('./models/order');
+const OrderItems = require('./models/order-item');
 
 // CONTROLLERS
 const errorController = require("./controllers/error");
@@ -71,6 +73,13 @@ Cart.belongsTo(User);
 // ASSOCIATION BETWEEN PRODUCT & CART
 Product.belongsToMany(Cart, { through: CartItems });
 Cart.belongsToMany(Product, { through: CartItems });
+
+
+// ASSOCIATION BETWEEN USER, PRODUCT, ORDER, ORDERITEM
+User.hasMany(Order);
+Order.belongsTo(User);
+Order.belongsToMany(Product, { through: OrderItems });
+Product.belongsToMany(Order, { through: OrderItems });
 
 sequelize
   // .sync({ force: true })
