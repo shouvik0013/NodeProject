@@ -192,7 +192,7 @@ module.exports.postOrder = (req, res, next) => {
 
 module.exports.getOrders = (req, res, next) => {
   req.user
-    .getOrders({include: Product})
+    .getOrders({ include: Product })
     .then((orders) => {
       console.log(orders);
       res.render("shop/orders", {
