@@ -69,6 +69,8 @@ module.exports.getCart = (req, res, next) => {
       return cart.getProducts();
     })
     .then((products) => {
+      console.log("Products Array -> ");
+      console.log(JSON.stringify(products, null, 2));
       res.render("shop/cart", {
         pageTitle: "Your Cart",
         products: products,
