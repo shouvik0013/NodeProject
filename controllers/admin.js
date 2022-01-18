@@ -4,8 +4,6 @@ const express = require("express");
 // "Product" CLASS
 const Product = require("../models/product");
 
-
-
 /**
  * Renders the AddProduct Page
  * @param {express.Request} req
@@ -142,8 +140,10 @@ module.exports.postAddProduct = (req, res, next) => {
   const price = req.body.price;
   const description = req.body.description;
   const product = new Product(title, description, imageUrl, price);
-    product.save()
+  product
+    .save()
     .then((result) => {
+      console.log(result);
       console.log("Product saved");
       res.redirect("/admin/products");
     })
