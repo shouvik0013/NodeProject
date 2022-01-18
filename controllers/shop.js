@@ -26,11 +26,10 @@ module.exports.getProduct = (req, res, next) => {
    *  @type {String}
    * GETTING productId FROM REQUEST URL
    */
-  const prodId = Number(req.params.productId);
+  const prodId = req.params.productId;
 
-  Product.findAll({ where: { id: prodId } })
-    .then((products) => {
-      const [product, ...otherProuducts] = products;
+  Product.findById(prodId)
+    .then((product) => {
       res.render("shop/product-detail", {
         product: product,
         pageTitle: product.title,
