@@ -4,8 +4,7 @@ const express = require("express");
 // "Product" CLASS
 const Product = require("../models/product");
 
-// Sequelize
-const { Sequelize, Model, DataTypes, Op } = require("sequelize");
+
 
 /**
  * Renders the AddProduct Page
@@ -142,15 +141,8 @@ module.exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-
-  req.user
-    .createProduct({
-      title: title,
-      description: description,
-      price: price,
-      imageUrl: imageUrl,
-      UserId: req.user.id,
-    })
+  const product = new Product(title, description, imageUrl, price);
+    product.save()
     .then((result) => {
       console.log("Product saved");
       res.redirect("/admin/products");

@@ -19,6 +19,7 @@
     "express-handlebars": "^3.0.2",
     "generate-unique-id": "^2.0.1",
     "mariadb": "^2.5.5",
+    "mongodb": "^4.3.0",
     "mysql2": "^2.3.3",
     "pug": "^3.0.2",
     "sequelize": "^7.0.0-alpha.4"

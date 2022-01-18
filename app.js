@@ -7,19 +7,13 @@ const bodyParser = require("body-parser"); // BODY PARSER
 
 // ROUTES
 const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
+// const shopRoutes = require("./routes/shop");
 
 // UTILS
 const rootDirectoryPath = require("./utils/path");
-const sequelize = require("./utils/database");
+// DATABASE
+const mongoConnect = require('./utils/database').mongoConnect;
 
-// MODELS
-const Product = require("./models/product");
-const User = require("./models/user");
-const Cart = require("./models/cart");
-const CartItems = require("./models/cart-item");
-const Order = require("./models/order");
-const OrderItems = require("./models/order-item");
 
 // CONTROLLERS
 const errorController = require("./controllers/error");
@@ -36,82 +30,18 @@ app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a mid
 // EXPOSING "public" FOLDER TO PROVIDE DIRECT ACCESS
 app.use(express.static(path.join(rootDirectoryPath, "public")));
 
-/**
- * @param {express.Request} req
- * @param {express.Response} res
- * @param {Function} next
- */
-app.use((req, res, next) => {
-  User.findByPk(1)
-    .then((user) => {
-      req.user = user;
-      next();
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-});
+
+
+
 
 // SETTING UP ROUTES INTO app
-app.use("/admin", adminRoutes); // adminRoutes is also a valid middleware
-app.use("/", shopRoutes);
+app.use("/admin", adminRoutes); 
+// app.use("/", shopRoutes);
 
 app.use(errorController.get404);
 
-// IN CREATING SENSE. A PRODUCT IS ADDED BY ONE USER
-// AND AN USER CAN ADD MULTIPLE PRODUCTS
-User.hasMany(Product);
-Product.belongsTo(User, {
-  constraints: true,
-  onDelete: "CASCADE",
-});
 
-// ASSOCIATION BETWEEN USER & CART
-User.hasOne(Cart);
-Cart.belongsTo(User);
-
-// ASSOCIATION BETWEEN PRODUCT & CART
-Product.belongsToMany(Cart, { through: CartItems });
-Cart.belongsToMany(Product, { through: CartItems });
-
-// ASSOCIATION BETWEEN USER, PRODUCT, ORDER, ORDERITEM
-User.hasMany(Order);
-Order.belongsTo(User);
-Order.belongsToMany(Product, { through: OrderItems });
-Product.belongsToMany(Order, { through: OrderItems });
-
-let fetchedUser;
-
-sequelize
-  // .sync({ force: true })
-  .sync()
-  .then((result) => {
-    return User.findByPk(1); // THIS LINE ALSO RETURNS A PROMISE
-  })
-  .then((user) => {
-    if (!user) {
-      return User.create({
-        name: "Shouvik",
-        email: "shouvik0013@gmail.com",
-      });
-    }
-    return Promise.resolve(user);
-  })
-  .then((user) => {
-    fetchedUser = user;
-    console.log(user);
-    return user.getCart();
-    // return user.createCart()
-  })
-  .then((cart) => {
-    if (!cart) {
-      return fetchedUser.createCart();
-    }
-    return Promise.resolve(cart);
-  })
-  .then((cart) => {
-    console.log(fetchedUser);
-    console.log(cart);
-    app.listen(3000);
-  })
-  .catch((err) => console.log(err));
+mongoConnect(() => {
+  //console.log(client);
+  app.listen(3000);
+})
