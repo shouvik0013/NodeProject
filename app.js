@@ -7,7 +7,7 @@ const bodyParser = require("body-parser"); // BODY PARSER
 
 // ROUTES
 const adminRoutes = require("./routes/admin");
-// const shopRoutes = require("./routes/shop");
+const shopRoutes = require("./routes/shop");
 
 // UTILS
 const rootDirectoryPath = require("./utils/path");
@@ -36,7 +36,7 @@ app.use(express.static(path.join(rootDirectoryPath, "public")));
 
 // SETTING UP ROUTES INTO app
 app.use("/admin", adminRoutes); 
-// app.use("/", shopRoutes);
+app.use("/", shopRoutes);
 
 app.use(errorController.get404);
 

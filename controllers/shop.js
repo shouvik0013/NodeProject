@@ -1,12 +1,10 @@
 const express = require("express");
 const Product = require("../models/product"); // Product  is a class
-const Cart = require("../models/cart");
-const CartItem = require("../models/cart-item");
 
-const { Sequelize, Model, DataTypes, Op } = require("sequelize");
 module.exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  Product.fetchAll()
     .then((products) => {
+      console.log(products);
       res.render("shop/product-list", {
         prods: products,
         pageTitle: "All Products",
@@ -51,7 +49,7 @@ module.exports.getProduct = (req, res, next) => {
  * @returns {null}
  */
 module.exports.getIndex = (req, res, next) => {
-  Product.findAll()
+  Product.fetchAll()
     .then((products) => {
       res.render("shop/index", {
         prods: products,
