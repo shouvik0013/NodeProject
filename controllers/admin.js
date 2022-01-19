@@ -1,5 +1,6 @@
 // THIRD-PARTY PACKAGES
 const express = require("express");
+const mongodb = require("mongodb");
 
 // "Product" CLASS
 const Product = require("../models/product");
@@ -88,32 +89,16 @@ module.exports.postEditProduct = (req, res, next) => {
   const updatedPrice = req.body.price;
   const updatedDescription = req.body.description;
   const productId = req.body.productId;
-
-  Product.findByPk(productId)
-    .then((product) => {
-      if (!product) {
-        console.log("Product not found");
-        return res.redirect("/");
-      }
-
-      // product.title = updatedTitle;
-      // product.price = updatedPrice;
-      // product.description = updatedDescription;
-      // product.imageUrl = updatedImageUrl;
-
-      product.update({
-        title: updatedTitle,
-        price: updatedPrice,
-        description: updatedDescription,
-        imageUrl: updatedImageUrl,
-      });
-
-      // SAVING THE PRODUCT INTO THE DATABASE
-      return product.save();
-    })
+  const updatedProduct = new Product(
+    updatedTitle,
+    updatedDescription,
+    updatedImageUrl,
+    updatedPrice,
+    productId
+  )
+  updatedProduct.save()
     .then((result) => {
-      console.log("Product is updated & saved to database");
-      console.log("Returned result " + result);
+      // console.log("Returned result " + result);
       res.redirect("/admin/products");
     })
     .catch((err) => console.log(err));
@@ -150,11 +135,8 @@ module.exports.postAddProduct = (req, res, next) => {
  */
 module.exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.findByPk(productId)
-    .then((product) => {
-      return product.destroy();
-    })
-    .then(() => {
+  Product.deleteById(productId)
+    .then((result) => {
       console.log("PRODUCT DESTROYED");
       res.redirect("/admin/products");
     })
