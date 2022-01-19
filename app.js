@@ -11,9 +11,12 @@ const shopRoutes = require("./routes/shop");
 
 // UTILS
 const rootDirectoryPath = require("./utils/path");
-// DATABASE
-const mongoConnect = require('./utils/database').mongoConnect;
 
+// DATABASE
+const mongoConnect = require("./utils/database").mongoConnect;
+
+// MODELS
+const User = require("./models/user");
 
 // CONTROLLERS
 const errorController = require("./controllers/error");
@@ -30,18 +33,24 @@ app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a mid
 // EXPOSING "public" FOLDER TO PROVIDE DIRECT ACCESS
 app.use(express.static(path.join(rootDirectoryPath, "public")));
 
-
-
-
+app.use((req, res, next) => {
+  User.findById("61e812d7445808c3e3345bbf")
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 // SETTING UP ROUTES INTO app
-app.use("/admin", adminRoutes); 
+app.use("/admin", adminRoutes);
 app.use("/", shopRoutes);
 
 app.use(errorController.get404);
 
-
 mongoConnect(() => {
   //console.log(client);
   app.listen(3000);
-})
+});

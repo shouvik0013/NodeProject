@@ -95,8 +95,9 @@ module.exports.postEditProduct = (req, res, next) => {
     updatedImageUrl,
     updatedPrice,
     productId
-  )
-  updatedProduct.save()
+  );
+  updatedProduct
+    .save()
     .then((result) => {
       // console.log("Returned result " + result);
       res.redirect("/admin/products");
@@ -115,7 +116,14 @@ module.exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(title, description, imageUrl, price);
+  const product = new Product(
+    title,
+    description,
+    imageUrl,
+    price,
+    null,
+    req.user._id
+  );
   product
     .save()
     .then((result) => {
