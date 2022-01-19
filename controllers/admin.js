@@ -27,8 +27,7 @@ module.exports.getAddProduct = (req, res, next) => {
  * @param {Function} next
  */
 module.exports.getProducts = (req, res, next) => {
-  req.user
-    .getProducts()
+  Product.fetchAll()
     .then((products) => {
       res.render("admin/products", {
         path: "/admin/products",
@@ -60,16 +59,8 @@ module.exports.getEditProduct = (req, res, next) => {
 
   const productId = req.params.productId;
   // Product.findByPk(productId)
-  req.user
-    .getProducts({
-      where: {
-        id: {
-          [Op.eq]: productId,
-        },
-      },
-    })
-    .then((products) => {
-      const product = products[0];
+  Product.findById(productId)
+    .then((product) => {
       if (!product) {
         console.log("No product found");
         return res.redirect("/");

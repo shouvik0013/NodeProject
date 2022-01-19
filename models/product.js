@@ -41,6 +41,8 @@ class Product {
         console.log(err);
       });
   }
+
+  update()
 }
 
 module.exports = Product;
