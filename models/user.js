@@ -47,7 +47,8 @@ class User {
       return item.productId;
     });
     console.log("Product IDs -> " + productIds);
-    return db.collection("products")
+    return db
+      .collection("products")
       .find({ _id: { $in: productIds } })
       .toArray()
       .then((products) => {
@@ -60,6 +61,67 @@ class User {
             }).quantity,
           };
         });
+      });
+  }
+
+  deleteProductFromCart(productId) {
+    const updatedCartItems = this.cart.items.filter((item) => {
+      if (productId.toString() !== item.productId.toString()) {
+        return true;
+      }
+      return false;
+    });
+    const db = getDb();
+    return db
+      .collection("users")
+      .updateOne(
+        { _id: new ObjectId(this._id) },
+        {
+          $set: {
+            cart: {
+              items: updatedCartItems,
+            },
+          },
+        }
+      )
+      .then((result) => {
+        console.log("Deleted product -> " + result);
+        return result;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  addOrder() {
+    const db = getDb();
+    return this.getCart()
+      .then((products) => {
+        const order = {
+          items: products,
+          user: {
+            _id: new ObjectId(this._id),
+            username: this.username,
+            email: this.email,
+          },
+        };
+        return db.collection("orders").insertOne(order);
+      })
+      .then((result) => {
+        console.log("New order placed -> " + result);
+        this.cart.items = [];
+        return db.collection("users").updateOne(
+          { _id: new ObjectId(this._id) },
+          {
+            $set: {
+              cart: { items: [] },
+            },
+          }
+        );
+      })
+      .then((result) => {
+        console.log(result);
+        return result;
       });
   }
 
