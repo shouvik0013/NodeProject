@@ -124,7 +124,7 @@ module.exports.postOrder = (req, res, next) => {
 
 module.exports.getOrders = (req, res, next) => {
   req.user
-    .getOrders({ include: Product })
+    .getOrders()
     .then((orders) => {
       console.log(orders);
       res.render("shop/orders", {
