@@ -28,7 +28,10 @@ module.exports.getAddProduct = (req, res, next) => {
  */
 module.exports.getProducts = (req, res, next) => {
   Product.find()
+    .select("title imageUrl price _id description")
+    .populate("userId", "name email")
     .then((products) => {
+      console.log(products);
       res.render("admin/products", {
         path: "/admin/products",
         prods: products,
@@ -121,13 +124,13 @@ module.exports.postAddProduct = (req, res, next) => {
     imageUrl: imageUrl,
     price: price,
     description: description,
+    userId: req.user,
   });
 
   product
     .save()
     .then((result) => {
-      console.log(result);
-      console.log("PRODUCT CREATED");
+      console.log("PRODUCT CREATED -> " + result);
       res.redirect("/admin/products");
     })
     .catch((err) => console.log(err));

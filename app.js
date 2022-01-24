@@ -14,7 +14,7 @@ const shopRoutes = require("./routes/shop");
 const rootDirectoryPath = require("./utils/path");
 
 // MODELS
-// const User = require("./models/user");
+const User = require("./models/user");
 
 // CONTROLLERS
 const errorController = require("./controllers/error");
@@ -31,16 +31,16 @@ app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a mid
 // EXPOSING "public" FOLDER TO PROVIDE DIRECT ACCESS
 app.use(express.static(path.join(rootDirectoryPath, "public")));
 
-// app.use((req, res, next) => {
-//   User.findById("61e812d7445808c3e3345bbf")
-//     .then((user) => {
-//       req.user = new User(user.username, user.email, user.cart, user._id);
-//       next();
-//     })
-//     .catch((err) => {
-//       console.log(err);
-//     });
-// });
+app.use((req, res, next) => {
+  User.findById("61ee56dabf5d79dda2aac1da")
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 // SETTING UP ROUTES INTO app
 app.use("/admin", adminRoutes);
@@ -54,6 +54,20 @@ mongoose
   )
   .then((result) => {
     console.log("CONNECTED TO MONGODB SERVER");
+    User.findOne().then((user) => {
+      if (!user) {
+        const user = new User({
+          name: "Boo",
+          email: "boo@gmail.com",
+          cart: { items: [] },
+        });
+        return user.save();
+      }
+      return user;
+    });
+  })
+  .then((user) => {
+    console.log("NODEJS SERVER IS NOW LISTENING");
     app.listen(3000);
   })
   .catch((err) => {
