@@ -1,6 +1,5 @@
 // THIRD-PARTY PACKAGES
 const express = require("express");
-const mongodb = require("mongodb");
 
 // "Product" CLASS
 const Product = require("../models/product");
@@ -116,19 +115,19 @@ module.exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
-  const product = new Product(
-    title,
-    description,
-    imageUrl,
-    price,
-    null,
-    req.user._id
-  );
+
+  const product = new Product({
+    title: title,
+    imageUrl: imageUrl,
+    price: price,
+    description: description,
+  });
+
   product
     .save()
     .then((result) => {
       console.log(result);
-      console.log("Product saved");
+      console.log("PRODUCT CREATED");
       res.redirect("/admin/products");
     })
     .catch((err) => console.log(err));

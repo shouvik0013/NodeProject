@@ -2,7 +2,7 @@ const express = require("express");
 const Product = require("../models/product"); // Product  is a class
 
 module.exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then((products) => {
       console.log(products);
       res.render("shop/product-list", {
@@ -30,6 +30,8 @@ module.exports.getProduct = (req, res, next) => {
 
   Product.findById(prodId)
     .then((product) => {
+      console.log("Details of the product -> ");
+      console.log(product);
       res.render("shop/product-detail", {
         product: product,
         pageTitle: product.title,
@@ -48,8 +50,9 @@ module.exports.getProduct = (req, res, next) => {
  * @returns {null}
  */
 module.exports.getIndex = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then((products) => {
+      console.log(products);
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
