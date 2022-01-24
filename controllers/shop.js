@@ -90,7 +90,7 @@ module.exports.postCart = (req, res, next) => {
       return req.user.addToCart(product);
     })
     .then((result) => {
-      console.log(result);
+      console.log("PRODUCT SAVED INTO CART -> " + result);
       res.redirect("/cart");
     });
 };
