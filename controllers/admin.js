@@ -27,7 +27,7 @@ module.exports.getAddProduct = (req, res, next) => {
  * @param {Function} next
  */
 module.exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then((products) => {
       res.render("admin/products", {
         path: "/admin/products",
@@ -58,7 +58,7 @@ module.exports.getEditProduct = (req, res, next) => {
   }
 
   const productId = req.params.productId;
-  // Product.findByPk(productId)
+
   Product.findById(productId)
     .then((product) => {
       if (!product) {
@@ -88,17 +88,17 @@ module.exports.postEditProduct = (req, res, next) => {
   const updatedPrice = req.body.price;
   const updatedDescription = req.body.description;
   const productId = req.body.productId;
-  const updatedProduct = new Product(
-    updatedTitle,
-    updatedDescription,
-    updatedImageUrl,
-    updatedPrice,
-    productId
-  );
-  updatedProduct
-    .save()
+
+  Product.findById(productId)
+    .then((product) => {
+      product.title = updatedTitle;
+      product.price = updatedPrice;
+      product.description = updatedDescription;
+      product.imageUrl = updatedImageUrl;
+      return product.save();
+    })
     .then((result) => {
-      // console.log("Returned result " + result);
+      console.log("Result after updating a product -> " + result);
       res.redirect("/admin/products");
     })
     .catch((err) => console.log(err));
