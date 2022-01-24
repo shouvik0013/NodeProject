@@ -142,9 +142,10 @@ module.exports.postAddProduct = (req, res, next) => {
  */
 module.exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.deleteById(productId)
+  Product.findByIdAndRemove(productId)
     .then((result) => {
-      console.log("PRODUCT DESTROYED");
+      console.log("PRODUCT HAS BEEN DELETED");
+      console.log("RESULT OF DELETION -> " + result);
       res.redirect("/admin/products");
     })
     .catch((err) => console.log(err));

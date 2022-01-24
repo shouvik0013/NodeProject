@@ -20,7 +20,7 @@ router.get("/edit-product/:productId", adminController.getEditProduct);
 // PATH: /admin/edit-product
 router.post("/edit-product", adminController.postEditProduct);
 
-// // PATH: /admin/delete-product
-// router.post("/delete-product", adminController.postDeleteProduct);
+// PATH: /admin/delete-product
+router.post("/delete-product", adminController.postDeleteProduct);
 
 module.exports = router;
