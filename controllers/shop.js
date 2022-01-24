@@ -64,13 +64,14 @@ module.exports.getIndex = (req, res, next) => {
 
 module.exports.getCart = (req, res, next) => {
   req.user
-    .getCart()
-    .then((products) => {
+    .populate("cart.items.prodId")
+    .then((user) => {
       console.log("Products Array -> ");
-      console.log(JSON.stringify(products, null, 2));
+      console.log(JSON.stringify(user, null, 2));
+      const fetchedProducts = user.cart.items;
       res.render("shop/cart", {
         pageTitle: "Your Cart",
-        products: products,
+        products: fetchedProducts,
         path: "/cart",
       });
     })

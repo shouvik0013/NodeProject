@@ -19,8 +19,8 @@ router.get("/products", shopController.getProducts);
 // PATH: /products/874729902
 router.get("/products/:productId", shopController.getProduct);
 
-// // PATH: /cart
-// router.get("/cart", shopController.getCart);
+// PATH: /cart
+router.get("/cart", shopController.getCart);
 // PATH: /cart
 router.post("/cart", shopController.postCart);
 
