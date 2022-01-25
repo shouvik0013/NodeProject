@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a mid
 app.use(express.static(path.join(rootDirectoryPath, "public")));
 
 app.use((req, res, next) => {
-  User.findById("61ee56dabf5d79dda2aac1da")
+  User.findById("61effb32665b359e46125cf6")
     .then((user) => {
       req.user = user;
       next();
