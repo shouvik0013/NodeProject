@@ -1,5 +1,5 @@
 const express = require("express");
-
+const User = require("../models/user");
 /**
  *
  * @param {express.Request} req
@@ -25,6 +25,13 @@ module.exports.getLogin = (req, res, next) => {
  * @param {Function} next
  */
 module.exports.postLogin = (req, res, next) => {
-  req.session.isLoggedIn = true;
-  res.redirect("/");
+  User.findById("61effb32665b359e46125cf6")
+    .then((user) => {
+      req.session.user = user;
+      req.session.isLoggedIn = true;
+      res.redirect("/");
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
