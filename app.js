@@ -5,6 +5,8 @@ const path = require("path");
 const express = require("express"); // EXPRESS
 const bodyParser = require("body-parser"); // BODY PARSER
 const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoDBStore = require("connect-mongodb-session")(session);
 
 // ROUTES
 const adminRoutes = require("./routes/admin");
@@ -20,8 +22,15 @@ const User = require("./models/user");
 // CONTROLLERS
 const errorController = require("./controllers/error");
 
+const MONGODB_URI =
+  "mongodb+srv://devusr:ddreb0660@cluster0.fyweo.mongodb.net/Shop?retryWrites=true&w=majority";
+
 // EXPRESS App
 const app = express();
+const store = new MongoDBStore({
+  uri: MONGODB_URI,
+  collection: "sessions"
+})
 
 // SETTING TEMPLATING ENGINE
 app.set("view engine", "ejs");
@@ -31,6 +40,14 @@ app.set("views", "views");
 app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a middleware
 // EXPOSING "public" FOLDER TO PROVIDE DIRECT ACCESS
 app.use(express.static(path.join(rootDirectoryPath, "public")));
+app.use(
+  session({
+    secret: "secret code to encrypt",
+    resave: false,
+    saveUninitialized: false,
+    store: store
+  })
+);
 
 app.use((req, res, next) => {
   User.findById("61effb32665b359e46125cf6")
@@ -51,9 +68,7 @@ app.use(authRoutes);
 app.use(errorController.get404);
 
 mongoose
-  .connect(
-    "mongodb+srv://devusr:ddreb0660@cluster0.fyweo.mongodb.net/Shop?retryWrites=true&w=majority"
-  )
+  .connect(MONGODB_URI)
   .then((result) => {
     console.log("CONNECTED TO MONGODB SERVER");
     User.findOne().then((user) => {

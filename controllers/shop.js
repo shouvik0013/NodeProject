@@ -11,6 +11,7 @@ module.exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: "All Products",
         path: "/products",
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -38,6 +39,7 @@ module.exports.getProduct = (req, res, next) => {
         product: product,
         pageTitle: product.title,
         path: "/products",
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -59,6 +61,7 @@ module.exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: "Shop",
         path: "/",
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -75,6 +78,7 @@ module.exports.getCart = (req, res, next) => {
         pageTitle: "Your Cart",
         products: fetchedProducts,
         path: "/cart",
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -155,17 +159,20 @@ module.exports.postOrder = (req, res, next) => {
 };
 
 module.exports.getOrders = (req, res, next) => {
-  Order.find({ userId: req.user }).then(orders => {
-    console.log("ORDER OF THE USER ->");
-    console.log(JSON.stringify(orders, null, 2));
-    return orders
-  }).then(orders => {
-    res.render("shop/orders", {
-      pageTitle: "Your orders",
-      path: "/orders",
-      orders: orders
+  Order.find({ userId: req.user })
+    .then((orders) => {
+      console.log("ORDER OF THE USER ->");
+      console.log(JSON.stringify(orders, null, 2));
+      return orders;
     })
-  })
+    .then((orders) => {
+      res.render("shop/orders", {
+        pageTitle: "Your orders",
+        path: "/orders",
+        orders: orders,
+        isAuthenticated: req.isLoggedIn,
+      });
+    });
 
   // req.user
   //   .getOrders()
@@ -193,5 +200,6 @@ module.exports.getCheckout = (req, res, next) => {
   res.render("shop/checkout", {
     pageTitle: "Checkout",
     path: "/checkout",
+    isAuthenticated: req.isLoggedIn,
   });
 };
