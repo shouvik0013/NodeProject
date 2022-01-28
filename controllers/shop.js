@@ -6,7 +6,7 @@ const order = require("../models/order");
 module.exports.getProducts = (req, res, next) => {
   Product.find()
     .then((products) => {
-      console.log(products);
+      //console.log(products);
       res.render("shop/product-list", {
         prods: products,
         pageTitle: "All Products",
@@ -33,8 +33,8 @@ module.exports.getProduct = (req, res, next) => {
 
   Product.findById(prodId)
     .then((product) => {
-      console.log("Details of the product -> ");
-      console.log(product);
+      //console.log("Details of the product -> ");
+      //console.log(product);
       res.render("shop/product-detail", {
         product: product,
         pageTitle: product.title,
@@ -56,7 +56,7 @@ module.exports.getProduct = (req, res, next) => {
 module.exports.getIndex = (req, res, next) => {
   Product.find()
     .then((products) => {
-      console.log(products);
+      //console.log(products);
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
@@ -67,8 +67,14 @@ module.exports.getIndex = (req, res, next) => {
     .catch((err) => console.log(err));
 };
 
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {Function} next
+ */
 module.exports.getCart = (req, res, next) => {
-  req.session.user
+  req.user
     .populate("cart.items.prodId")
     .then((user) => {
       console.log("Products Array -> ");
@@ -94,7 +100,7 @@ module.exports.postCart = (req, res, next) => {
   const productId = req.body.productId;
   Product.findById(productId)
     .then((product) => {
-      return req.session.user.addToCart(product);
+      return req.user.addToCart(product);
     })
     .then((result) => {
       console.log("PRODUCT SAVED INTO CART -> " + result);
@@ -110,7 +116,7 @@ module.exports.postCart = (req, res, next) => {
  */
 module.exports.postCartDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  req.session.user
+  req.user
     .removeProductFromCart(productId)
     .then((result) => {
       res.redirect("/cart");
@@ -127,7 +133,7 @@ module.exports.postCartDeleteProduct = (req, res, next) => {
  * @param {Function} next
  */
 module.exports.postOrder = (req, res, next) => {
-  req.session.user
+  req.user
     .populate("cart.items.prodId")
     .then((user) => {
       console.log("USER CART DATA -> ");
@@ -141,8 +147,8 @@ module.exports.postOrder = (req, res, next) => {
 
       const newOrder = new Order({
         user: {
-          name: req.session.user.name,
-          userId: req.session.user._id,
+          name: req.user.name,
+          userId: req.user._id,
         },
         products: products,
       });
@@ -150,7 +156,7 @@ module.exports.postOrder = (req, res, next) => {
       return newOrder.save();
     })
     .then((result) => {
-      return req.session.user.clearCart();
+      return req.user.clearCart();
     })
     .then((result) => {
       res.redirect("/orders");
@@ -159,7 +165,7 @@ module.exports.postOrder = (req, res, next) => {
 };
 
 module.exports.getOrders = (req, res, next) => {
-  Order.find({ userId: req.session.user })
+  Order.find({ userId: req.user })
     .then((orders) => {
       console.log("ORDER OF THE USER ->");
       console.log(JSON.stringify(orders, null, 2));
@@ -174,7 +180,7 @@ module.exports.getOrders = (req, res, next) => {
       });
     });
 
-  // req.session.user
+  // req.user
   //   .getOrders()
   //   .then((orders) => {
   //     console.log(orders);

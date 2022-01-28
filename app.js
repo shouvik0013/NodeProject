@@ -29,8 +29,8 @@ const MONGODB_URI =
 const app = express();
 const store = new MongoDBStore({
   uri: MONGODB_URI,
-  collection: "sessions"
-})
+  collection: "sessions",
+});
 
 // SETTING TEMPLATING ENGINE
 app.set("view engine", "ejs");
@@ -40,14 +40,30 @@ app.set("views", "views");
 app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a middleware
 // EXPOSING "public" FOLDER TO PROVIDE DIRECT ACCESS
 app.use(express.static(path.join(rootDirectoryPath, "public")));
+// INITIALISING SESSION FORM DATABASE
 app.use(
   session({
     secret: "secret code to encrypt",
     resave: false,
     saveUninitialized: false,
-    store: store
+    store: store,
   })
 );
+
+
+app.use((req, res, next) => {
+  if (!req.session.user) {
+    return next();
+  }
+
+  User.findById(req.session.user._id).then(user => {
+    req.user = user;
+    next();
+  }).catch(err => {
+    console.log("IN APP.JS ERROR IN LOADING USER")
+  })
+})
+
 
 
 // SETTING UP ROUTES INTO app

@@ -28,7 +28,7 @@ module.exports.getAddProduct = (req, res, next) => {
  * @param {Function} next
  */
 module.exports.getProducts = (req, res, next) => {
-  Product.find()
+  Product.find({userId: req.user})
     .select("title imageUrl price _id description")
     .populate("userId", "name email")
     .then((products) => {
@@ -127,7 +127,7 @@ module.exports.postAddProduct = (req, res, next) => {
     imageUrl: imageUrl,
     price: price,
     description: description,
-    userId: req.session.user,
+    userId: req.user,
   });
 
   product
