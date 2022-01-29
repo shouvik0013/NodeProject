@@ -50,21 +50,20 @@ app.use(
   })
 );
 
-
 app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
   }
 
-  User.findById(req.session.user._id).then(user => {
-    req.user = user;
-    next();
-  }).catch(err => {
-    console.log("IN APP.JS ERROR IN LOADING USER")
-  })
-})
-
-
+  User.findById(req.session.user._id)
+    .then((user) => {
+      req.user = user;
+      next();
+    })
+    .catch((err) => {
+      console.log("IN APP.JS ERROR IN LOADING USER");
+    });
+});
 
 // SETTING UP ROUTES INTO app
 app.use("/admin", adminRoutes);
@@ -77,19 +76,6 @@ mongoose
   .connect(MONGODB_URI)
   .then((result) => {
     console.log("CONNECTED TO MONGODB SERVER");
-    User.findOne().then((user) => {
-      if (!user) {
-        const user = new User({
-          name: "Boo",
-          email: "boo@gmail.com",
-          cart: { items: [] },
-        });
-        return user.save();
-      }
-      return user;
-    });
-  })
-  .then((user) => {
     console.log("NODEJS SERVER IS NOW LISTENING");
     app.listen(3000);
   })
