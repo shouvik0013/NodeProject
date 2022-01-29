@@ -27,21 +27,33 @@ module.exports.getLogin = (req, res, next) => {
  * @param {Function} next
  */
 module.exports.postLogin = (req, res, next) => {
-  User.findById("61effb32665b359e46125cf6")
+  const email = req.body.email;
+  const password = req.body.password;
+  let fetchedUser;
+  User.findOne({ email: email })
     .then((user) => {
-      req.session.user = user;
-      req.session.isLoggedIn = true; // here session is actually being stored
-      // into mongodb, so depending on the situation it takes some time to write it back
-      // to mongodb
-      req.session.save((err) => {
-        if (err) {
-          console.log("ERROR IN SAVING SESSION INTO DATABASE");
-        }
-        res.redirect("/");
-      });
+      if (!user) {
+        return res.redirect("/login");
+      }
+      fetchedUser = user;
+      return bcrypt.compare(password, user.password);
+    })
+    .then((doMatch) => {
+      if (doMatch) {
+        req.session.isLoggedIn = true;
+        req.session.user = fetchedUser;
+        return req.session.save((err) => {
+          if (err) {
+            console.log("ERROR IN SAVING SESSION");
+          }
+          res.redirect("/");
+        });
+      }
+      res.redirect("/login");
     })
     .catch((err) => {
       console.log(err);
+      res.redirect("/login");
     });
 };
 

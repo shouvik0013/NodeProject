@@ -165,7 +165,7 @@ module.exports.postOrder = (req, res, next) => {
 };
 
 module.exports.getOrders = (req, res, next) => {
-  Order.find({ userId: req.user })
+  Order.find({ "user.userId": req.user })
     .then((orders) => {
       console.log("ORDER OF THE USER ->");
       console.log(JSON.stringify(orders, null, 2));
