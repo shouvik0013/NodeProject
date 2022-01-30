@@ -7,6 +7,7 @@ const bodyParser = require("body-parser"); // BODY PARSER
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const csrf = require("csurf");
 
 // ROUTES
 const adminRoutes = require("./routes/admin");
@@ -31,6 +32,7 @@ const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",
 });
+const csrfProtection = csrf(); // IT USES SESSION BY DEFAULT
 
 // SETTING TEMPLATING ENGINE
 app.set("view engine", "ejs");
@@ -50,6 +52,8 @@ app.use(
   })
 );
 
+app.use(csrfProtection);
+
 app.use((req, res, next) => {
   if (!req.session.user) {
     return next();
@@ -63,6 +67,12 @@ app.use((req, res, next) => {
     .catch((err) => {
       console.log("IN APP.JS ERROR IN LOADING USER");
     });
+});
+
+app.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 // SETTING UP ROUTES INTO app
