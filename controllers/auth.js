@@ -9,11 +9,16 @@ const User = require("../models/user");
  * @param {Function} next
  */
 module.exports.getLogin = (req, res, next) => {
-  console.log(req.session.isLoggedIn);
+  let msg = req.flash("error");
+  if (msg.length > 0) {
+    msg = msg[0];
+  } else {
+    msg = null;
+  }
   res.render("auth/login", {
     path: "/login",
     pageTitle: "Login",
-    errorMessage: req.flash("error"),
+    errorMessage: msg,
   });
 };
 
@@ -34,20 +39,20 @@ module.exports.postLogin = (req, res, next) => {
         return res.redirect("/login");
       }
       fetchedUser = user;
-      return bcrypt.compare(password, user.password);
-    })
-    .then((doMatch) => {
-      if (doMatch) {
-        req.session.isLoggedIn = true;
-        req.session.user = fetchedUser;
-        return req.session.save((err) => {
-          if (err) {
-            console.log("ERROR IN SAVING SESSION");
-          }
-          res.redirect("/");
-        });
-      }
-      res.redirect("/login");
+      return bcrypt.compare(password, user.password).then((doMatch) => {
+        if (doMatch) {
+          req.session.isLoggedIn = true;
+          req.session.user = fetchedUser;
+          return req.session.save((err) => {
+            if (err) {
+              console.log("ERROR IN SAVING SESSION");
+            }
+            res.redirect("/");
+          });
+        }
+        req.flash("error", "Invalid credentials");
+        res.redirect("/login");
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -70,10 +75,16 @@ module.exports.postLogout = (req, res, next) => {
 };
 
 exports.getSignup = (req, res, next) => {
+  let msg = req.flash("error");
+  if (msg.length > 0) {
+    msg = msg[0];
+  } else {
+    msg = null;
+  }
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
-    isAuthenticated: false,
+    errorMessage: msg
   });
 };
 
@@ -91,6 +102,7 @@ exports.postSignup = (req, res, next) => {
   User.findOne({ email: email })
     .then((user) => {
       if (user) {
+        req.flash("error", "EMAIL ALREADY EXISTS PLEASE USE DIFFERENT ONE");
         return res.redirect("/signup");
       }
 

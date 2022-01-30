@@ -29,10 +29,12 @@ const MONGODB_URI =
 
 // EXPRESS App
 const app = express();
+
 const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",
 });
+
 const csrfProtection = csrf(); // IT USES SESSION BY DEFAULT
 
 // SETTING TEMPLATING ENGINE
