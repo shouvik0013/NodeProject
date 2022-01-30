@@ -11,7 +11,6 @@ module.exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: "All Products",
         path: "/products",
-        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -39,7 +38,6 @@ module.exports.getProduct = (req, res, next) => {
         product: product,
         pageTitle: product.title,
         path: "/products",
-        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -83,7 +81,6 @@ module.exports.getCart = (req, res, next) => {
         pageTitle: "Your Cart",
         products: fetchedProducts,
         path: "/cart",
-        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -175,10 +172,8 @@ module.exports.getOrders = (req, res, next) => {
         pageTitle: "Your orders",
         path: "/orders",
         orders: orders,
-        isAuthenticated: req.session.isLoggedIn,
       });
     });
-
 };
 
 /**
@@ -192,6 +187,5 @@ module.exports.getCheckout = (req, res, next) => {
   res.render("shop/checkout", {
     pageTitle: "Checkout",
     path: "/checkout",
-    isAuthenticated: req.session.isLoggedIn,
   });
 };
