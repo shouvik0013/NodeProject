@@ -180,19 +180,6 @@ module.exports.getOrders = (req, res, next) => {
       });
     });
 
-  // req.user
-  //   .getOrders()
-  //   .then((orders) => {
-  //     console.log(orders);
-  //     res.render("shop/orders", {
-  //       pageTitle: "Your Orders",
-  //       path: "/orders",
-  //       orders: orders,
-  //     });
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
 };
 
 /**

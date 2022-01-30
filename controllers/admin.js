@@ -4,6 +4,7 @@ const express = require("express");
 // "Product" CLASS
 const Product = require("../models/product");
 
+
 /**
  * Renders the AddProduct Page
  * @param {express.Request} req
@@ -12,11 +13,14 @@ const Product = require("../models/product");
  * @returns {null}
  */
 module.exports.getAddProduct = (req, res, next) => {
+  if (!req.session.isLoggedIn) {
+    return res.redirect("/login");
+  }
   res.render("admin/edit-product", {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: false,
-    isAuthenticated: req.session.isLoggedIn
+    isAuthenticated: req.session.isLoggedIn,
   });
 };
 
@@ -28,7 +32,7 @@ module.exports.getAddProduct = (req, res, next) => {
  * @param {Function} next
  */
 module.exports.getProducts = (req, res, next) => {
-  Product.find({userId: req.user})
+  Product.find({ userId: req.user })
     .select("title imageUrl price _id description")
     .populate("userId", "name email")
     .then((products) => {
@@ -37,7 +41,7 @@ module.exports.getProducts = (req, res, next) => {
         path: "/admin/products",
         prods: products,
         pageTitle: "Admin Products",
-        isAuthenticated: req.session.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
@@ -76,7 +80,7 @@ module.exports.getEditProduct = (req, res, next) => {
         path: "/admin/edit-product",
         editing: editMode,
         product: product,
-        isAuthenticated: req.session.isLoggedIn
+        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch((err) => console.log(err));
