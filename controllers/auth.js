@@ -1,7 +1,18 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
+const nodeMailer = require("nodemailer");
+const sendGridTransport = require("nodemailer-sendgrid-transport");
 
 const User = require("../models/user");
+
+const transport = nodeMailer.createTransport(
+  sendGridTransport({
+    auth: {
+      api_key:
+        "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",
+    },
+  })
+);
 /**
  *
  * @param {express.Request} req
@@ -84,7 +95,7 @@ exports.getSignup = (req, res, next) => {
   res.render("auth/signup", {
     path: "/signup",
     pageTitle: "Signup",
-    errorMessage: msg
+    errorMessage: msg,
   });
 };
 
@@ -119,10 +130,39 @@ exports.postSignup = (req, res, next) => {
         })
         .then((result) => {
           res.redirect("/login");
+          return transport.sendMail({
+            to: email,
+            from: "shouvik0013@gmail.com",
+            subject: "Signup completed",
+            html: "<h1>You successfully signed up!</h1>",
+          });
+        })
+        .catch((err) => {
+          console.log("FROM SENDGRID -> " + err);
         });
     })
 
     .catch((err) => {
       console.log("ERROR IN auth.postSignup");
     });
+};
+
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {Function} next
+ */
+module.exports.getReset = (req, res, next) => {
+  let msg = req.flash("error");
+  if (msg.length > 0) {
+    msg = msg[0];
+  } else {
+    msg = null;
+  }
+  return res.render("auth/reset", {
+    path: "/reset",
+    pageTitle: "Reset Password",
+    errorMessage: msg,
+  });
 };
