@@ -11,17 +11,23 @@ router.get("/login", authController.getLogin);
 router.post(
   "/login",
   [
-    body("email").isEmail().withMessage("Enter a valid email address"),
-    body("password").custom((value, { req }) => {
-      if (value.length < 6) {
-        throw new Error("Password is too short");
-      }
-      const regex = new RegExp(/[0-9]+/);
-      if (!regex.test(value)) {
-        throw new Error("Password must contain numerical values");
-      }
-      return true;
-    }),
+    body("email")
+      .trim()
+      .isEmail()
+      .withMessage("Enter a valid email address")
+      .normalizeEmail(),
+    body("password")
+      .trim()
+      .custom((value, { req }) => {
+        if (value.length < 6) {
+          throw new Error("Password is too short");
+        }
+        const regex = new RegExp(/[0-9]+/);
+        if (!regex.test(value)) {
+          throw new Error("Password must contain numerical values");
+        }
+        return true;
+      }),
   ],
   authController.postLogin
 );
@@ -34,6 +40,7 @@ router.post(
   "/signup",
   [
     check("email")
+      .normalizeEmail()
       .isEmail()
       .withMessage("Please enter a valid email address")
       .custom((value, { req }) => {
@@ -59,14 +66,17 @@ router.post(
       "password",
       "Password must be at least 6 characters long and must be alphanumeric"
     )
+      .trim()
       .isLength({ min: 6, max: 50 })
       .isAlphanumeric(),
-    body("confirmPassword").custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error("Two passwords do not match");
-      }
-      return true;
-    }),
+    body("confirmPassword")
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error("Two passwords do not match");
+        }
+        return true;
+      }),
   ],
   authController.postSignup
 );

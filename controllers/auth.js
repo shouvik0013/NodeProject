@@ -33,6 +33,11 @@ module.exports.getLogin = (req, res, next) => {
     path: "/login",
     pageTitle: "Login",
     errorMessage: msg,
+    oldInput: {
+      email: '',
+      password: ''
+    },
+    validationErrors: []
   });
 };
 
@@ -53,6 +58,11 @@ module.exports.postLogin = (req, res, next) => {
       path: "/login",
       pageTitle: "Login",
       errorMessage: error.array()[0].msg,
+      oldInput: {
+        email: email,
+        password: password,
+      },
+      validationErrors: error.array(),
     });
   }
 
@@ -60,7 +70,16 @@ module.exports.postLogin = (req, res, next) => {
     .then((user) => {
       if (!user) {
         req.flash("error", "Invalid credentials");
-        return res.redirect("/login");
+        return res.status(422).render("auth/login", {
+          path: "/login",
+          pageTitle: "Login",
+          errorMessage: 'Invalid credentials',
+          oldInput: {
+            email: email,
+            password: password,
+          },
+          validationErrors: [{param: 'email'}],
+        });
       }
       fetchedUser = user;
       return bcrypt.compare(password, user.password).then((doMatch) => {
@@ -74,8 +93,16 @@ module.exports.postLogin = (req, res, next) => {
             res.redirect("/");
           });
         }
-        req.flash("error", "Invalid credentials");
-        res.redirect("/login");
+        return res.status(422).render("auth/login", {
+          path: "/login",
+          pageTitle: "Login",
+          errorMessage: 'Invalid credentials',
+          oldInput: {
+            email: email,
+            password: password,
+          },
+          validationErrors: [{param: 'password'}],
+        });
       });
     })
     .catch((err) => {
@@ -109,6 +136,8 @@ exports.getSignup = (req, res, next) => {
     path: "/signup",
     pageTitle: "Signup",
     errorMessage: msg,
+    oldContent: { email: "", password: "", confirmPassword: "" },
+    validationErrors: [],
   });
 };
 
@@ -140,6 +169,12 @@ exports.postSignup = (req, res, next) => {
       path: "/signup",
       pageTitle: "Signup",
       errorMessage: errors.array()[0].msg,
+      oldContent: {
+        email: email,
+        password: password,
+        confirmPassword: req.body.confirmPassword,
+      },
+      validationErrors: errors.array(),
     });
   }
 

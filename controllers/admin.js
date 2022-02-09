@@ -1,5 +1,6 @@
 // THIRD-PARTY PACKAGES
 const express = require("express");
+const { validationResult } = require("express-validator/check");
 
 // "Product" CLASS
 const Product = require("../models/product");
@@ -19,6 +20,9 @@ module.exports.getAddProduct = (req, res, next) => {
     pageTitle: "Add Product",
     path: "/admin/add-product",
     editing: false,
+    hasError: false,
+    errorMessage: null,
+    validationErrors: []
   });
 };
 
@@ -77,6 +81,9 @@ module.exports.getEditProduct = (req, res, next) => {
         path: "/admin/edit-product",
         editing: editMode,
         product: product,
+        hasError: false,
+        errorMessage: null,
+        validationErrors: []
       });
     })
     .catch((err) => console.log(err));
@@ -94,6 +101,29 @@ module.exports.postEditProduct = (req, res, next) => {
   const updatedPrice = req.body.price;
   const updatedDescription = req.body.description;
   const productId = req.body.productId;
+  const errors = validationResult(req);
+
+  console.log(productId);
+
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Edit Product",
+      path: "/admin/add-product",
+      editing: true,
+      product: {
+        title: updatedTitle,
+        imageUrl: updatedImageUrl,
+        price: updatedPrice,
+        description: updatedDescription,
+        _id: productId
+      },
+      hasError: true,
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array()
+    });
+  }
+
 
   Product.findById(productId)
     .then((product) => {
@@ -123,6 +153,25 @@ module.exports.postAddProduct = (req, res, next) => {
   const imageUrl = req.body.imageUrl;
   const price = req.body.price;
   const description = req.body.description;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    console.log(errors.array());
+    return res.status(422).render("admin/edit-product", {
+      pageTitle: "Add Product",
+      path: "/admin/add-product",
+      editing: false,
+      product: {
+        title: title,
+        imageUrl: imageUrl,
+        price: price,
+        description: description,
+      },
+      hasError: true,
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array()
+    });
+  }
 
   const product = new Product({
     title: title,
