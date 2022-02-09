@@ -4,7 +4,6 @@ const express = require("express");
 // "Product" CLASS
 const Product = require("../models/product");
 
-
 /**
  * Renders the AddProduct Page
  * @param {express.Request} req
@@ -98,15 +97,17 @@ module.exports.postEditProduct = (req, res, next) => {
 
   Product.findById(productId)
     .then((product) => {
+      if (product.userId.toString() !== req.user._id.toString()) {
+        return res.redirect("/");
+      }
       product.title = updatedTitle;
       product.price = updatedPrice;
       product.description = updatedDescription;
       product.imageUrl = updatedImageUrl;
-      return product.save();
-    })
-    .then((result) => {
-      console.log("Result after updating a product -> " + result);
-      res.redirect("/admin/products");
+      return product.save().then((result) => {
+        console.log("Result after updating a product -> " + result);
+        res.redirect("/admin/products");
+      });
     })
     .catch((err) => console.log(err));
 };
@@ -149,7 +150,7 @@ module.exports.postAddProduct = (req, res, next) => {
  */
 module.exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.findByIdAndRemove(productId)
+  Product.deleteOne({ _id: productId, userId: req.user._id })
     .then((result) => {
       console.log("PRODUCT HAS BEEN DELETED");
       console.log("RESULT OF DELETION -> " + result);

@@ -55,7 +55,7 @@ app.use(
   })
 );
 
-app.use(csrfProtection);
+app.use(csrfProtection); // BY DEFAULT IT USES SESSION, SO NEEDS TO BE ADDED AFTER SESSION INITIALIZATION
 app.use(flash());
 
 app.use((req, res, next) => {
