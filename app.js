@@ -57,9 +57,9 @@ const fileFilter = (req, file, cb) => {
     file.mimetype === "image/jpg" ||
     file.mimetype === "image/jpeg"
   ) {
-    cb(null, true)
+    cb(null, true);
   } else {
-    cb(null, false)
+    cb(null, false);
   }
 };
 
@@ -69,10 +69,13 @@ app.set("views", "views");
 
 // PARSES INCOMMING REQUEST
 app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a middleware
-app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single("image"));
+app.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
 
 // EXPOSING "public" FOLDER TO PROVIDE DIRECT ACCESS
 app.use(express.static(path.join(rootDirectoryPath, "public")));
+app.use("/images", express.static(path.join(rootDirectoryPath, "images")));
 // INITIALISING SESSION FORM DATABASE
 app.use(
   session({
@@ -121,7 +124,9 @@ app.get("/500", errorController.get500);
 
 app.use(errorController.get404);
 
+
 app.use((error, req, res, next) => {
+  console.log(error.message)
   res.render("500", {
     pageTitle: "Technical Error",
     path: "505",

@@ -1,7 +1,10 @@
+const fs = require("fs");
+const path = require("path");
+const rootDirectoryPath = require("../utils/path");
+
 const express = require("express");
 const Product = require("../models/product"); // Product  is a class
 const Order = require("../models/order");
-const order = require("../models/order");
 
 module.exports.getProducts = (req, res, next) => {
   Product.find()
@@ -137,7 +140,7 @@ module.exports.postOrder = (req, res, next) => {
       const products = user.cart.items.map((i) => {
         return {
           quantity: i.quantity,
-          product: { ...i.prodId._doc },
+          product: { ...i.prodId._doc }, // to copy all the details of product
         };
       });
 
@@ -188,4 +191,54 @@ module.exports.getCheckout = (req, res, next) => {
     pageTitle: "Checkout",
     path: "/checkout",
   });
+};
+
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {Function} next
+ */
+module.exports.getInvoice = (req, res, next) => {
+  const orderId = req.params.orderId;
+
+  Order.findById(orderId)
+    .then((order) => {
+      if (!order) {
+        return next(new Error("No order found!"));
+      }
+      if (order.user.userId._id.toString() !== req.user._id.toString()) {
+        return next(new Error("Unauthorized"));
+      }
+      const invoiceName = "invoice" + "-" + orderId + ".pdf";
+      const invoicePath = path.join(
+        rootDirectoryPath,
+        "data",
+        "invoices",
+        invoiceName
+      );
+
+      // fs.readFile(invoicePath, (err, data) => {
+      //   if (err) {
+      //     return next(err);
+      //   }
+      //   res.setHeader("Content-Type", "application/pdf");
+      //   res.setHeader(
+      //     "Content-Disposition",
+      //     'inline; filename="' + invoiceName + '"'
+      //   );
+      //   res.send(data);
+      // });
+
+      const file = fs.createReadStream(invoicePath);
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        'inline; filename="' + invoiceName + '"'
+      );
+      file.pipe(res);
+    })
+    .catch((err) => {
+      return next(err);
+    });
 };
