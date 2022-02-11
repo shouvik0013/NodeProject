@@ -26,10 +26,6 @@ router.post(
       .trim()
       .isString()
       .isLength({ min: 3, max: 40 }),
-    body("imageUrl")
-      .trim()
-      .isURL()
-      .withMessage("Please provide valid image-url"),
     body("price").isFloat().withMessage("Enter only decimal values"),
     body("description")
       .trim()
@@ -56,10 +52,6 @@ router.post(
       .withMessage(
         "Title must be at least 3 characters long and should contain only alphanumeric values"
       ),
-    body("imageUrl")
-      .isURL()
-      .trim()
-      .withMessage("Please provide valid image-url"),
     body("price").isDecimal().withMessage("Enter only decimal values"),
     body("description")
       .isLength({ min: 5, max: 200 })
