@@ -1,7 +1,7 @@
 // THIRD-PARTY PACKAGES
 const express = require("express");
 const { validationResult } = require("express-validator/check");
-
+const fileHelper = require("../utils/file");
 // "Product" CLASS
 const Product = require("../models/product");
 
@@ -131,8 +131,6 @@ module.exports.postEditProduct = (req, res, next) => {
     });
   }
 
-
-
   Product.findById(productId)
     .then((product) => {
       if (product.userId.toString() !== req.user._id.toString()) {
@@ -142,6 +140,7 @@ module.exports.postEditProduct = (req, res, next) => {
       product.price = updatedPrice;
       product.description = updatedDescription;
       if (image) {
+        fileHelper(product.imageUrl);
         product.imageUrl = image.path;
       }
       return product.save().then((result) => {
@@ -256,7 +255,15 @@ module.exports.postAddProduct = (req, res, next) => {
  */
 module.exports.postDeleteProduct = (req, res, next) => {
   const productId = req.body.productId;
-  Product.deleteOne({ _id: productId, userId: req.user._id })
+
+  Product.findById(productId)
+    .then((product) => {
+      if (!product) {
+        return next(new Error("Product not found."));
+      }
+      fileHelper(product.imageUrl);
+      return Product.deleteOne({ _id: productId, userId: req.user._id });
+    })
     .then((result) => {
       console.log("PRODUCT HAS BEEN DELETED");
       console.log("RESULT OF DELETION -> " + result);
