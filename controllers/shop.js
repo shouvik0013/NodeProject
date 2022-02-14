@@ -7,14 +7,40 @@ const Product = require("../models/product"); // Product  is a class
 const Order = require("../models/order");
 const PDFDocument = require("pdfkit");
 
+const ITEMS_PER_PAGE = 1;
+
 module.exports.getProducts = (req, res, next) => {
+  console.log("Value of page ->" + req.query.page);
+  let page;
+  if (!req.query.page) {
+    page = 1;
+  } else {
+    page = Number(req.query.page);
+  }
+
+  let totalItems;
+
   Product.find()
+    .countDocuments()
+    .then((numberOfProducts) => {
+      totalItems = numberOfProducts;
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((products) => {
       //console.log(products);
-      res.render("shop/product-list", {
+      res.render("shop/index", {
         prods: products,
-        pageTitle: "All Products",
+        pageTitle: "Shop",
         path: "/products",
+        totalProducts: totalItems,
+        hasNextPage: totalItems > ITEMS_PER_PAGE * page,
+        hasPrevPage: page > 1,
+        prevPage: page - 1,
+        currentPage: page,
+        nextPage: page + 1,
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
       });
     })
     .catch((err) => console.log(err));
@@ -56,16 +82,42 @@ module.exports.getProduct = (req, res, next) => {
  * @returns {null}
  */
 module.exports.getIndex = (req, res, next) => {
+  console.log("Value of page ->" + req.query.page);
+  let page;
+  if (!req.query.page) {
+    page = 1;
+  } else {
+    page = Number(req.query.page);
+  }
+
+  let totalItems;
+
   Product.find()
+    .countDocuments()
+    .then((numberOfProducts) => {
+      totalItems = numberOfProducts;
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then((products) => {
       //console.log(products);
       res.render("shop/index", {
         prods: products,
         pageTitle: "Shop",
         path: "/",
+        totalProducts: totalItems,
+        hasNextPage: totalItems > ITEMS_PER_PAGE * page,
+        hasPrevPage: page > 1,
+        prevPage: page - 1,
+        currentPage: page,
+        nextPage: page + 1,
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
       });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      return next(new Error(err));
+    });
 };
 
 /**

@@ -30,6 +30,13 @@
                     </article>
                 <% } %>
             </div>
+            <%- include('../includes/pagination', {currentPage:currentPage,
+                 prevPage:prevPage,
+                 hasPrevPage:hasPrevPage,
+                 hasNextPage:hasNextPage,
+                 nextPage:nextPage,
+                 lastPage:lastPage
+                })%>
         <% } else { %>
             <h1>No Products Found!</h1>
         <% } %>
