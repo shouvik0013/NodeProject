@@ -34,10 +34,10 @@ module.exports.getLogin = (req, res, next) => {
     pageTitle: "Login",
     errorMessage: msg,
     oldInput: {
-      email: '',
-      password: ''
+      email: "",
+      password: "",
     },
-    validationErrors: []
+    validationErrors: [],
   });
 };
 
@@ -73,12 +73,12 @@ module.exports.postLogin = (req, res, next) => {
         return res.status(422).render("auth/login", {
           path: "/login",
           pageTitle: "Login",
-          errorMessage: 'Invalid credentials',
+          errorMessage: "Invalid credentials",
           oldInput: {
             email: email,
             password: password,
           },
-          validationErrors: [{param: 'email'}],
+          validationErrors: [{ param: "email" }],
         });
       }
       fetchedUser = user;
@@ -96,12 +96,12 @@ module.exports.postLogin = (req, res, next) => {
         return res.status(422).render("auth/login", {
           path: "/login",
           pageTitle: "Login",
-          errorMessage: 'Invalid credentials',
+          errorMessage: "Invalid credentials",
           oldInput: {
             email: email,
             password: password,
           },
-          validationErrors: [{param: 'password'}],
+          validationErrors: [{ param: "password" }],
         });
       });
     })
@@ -301,6 +301,8 @@ module.exports.getNewPassword = (req, res, next) => {
     })
     .catch((err) => {
       console.log("ERROR IN auth.js getNewPassword -> " + err);
+      const error = new Error("can't generate new password");
+      return next(error);
     });
 };
 

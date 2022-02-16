@@ -70,7 +70,7 @@ app.set("views", "views");
 // PARSES INCOMMING REQUEST
 app.use(bodyParser.urlencoded({ extended: false })); // bodyParser is also a middleware
 app.use(
-  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")  // "image" name of the input field
 );
 
 // EXPOSING "public" FOLDER TO PROVIDE DIRECT ACCESS

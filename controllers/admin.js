@@ -256,7 +256,7 @@ module.exports.postAddProduct = (req, res, next) => {
 module.exports.deleteProduct = (req, res, next) => {
   const productId = req.params.productId;
 
-  Product.findById(productId)
+  Product.findOne({_id: productId, userId: req.user})
     .then((product) => {
       if (!product) {
         return next(new Error("Product not found."));
