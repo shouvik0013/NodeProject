@@ -194,6 +194,7 @@ module.exports.postOrder = (req, res, next) => {
         return {
           quantity: i.quantity,
           product: { ...i.prodId._doc }, // to copy all the details of product
+            // here _doc basically return the full "product" object
         };
       });
 
